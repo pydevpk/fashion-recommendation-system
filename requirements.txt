@@ -1,4 +1,8 @@
 fastapi
 uvicorn
+sklearn
+numpy
+pandas
+Pillow
 tensorflow
 python-multipart

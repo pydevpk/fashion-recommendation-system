@@ -20,8 +20,8 @@ from pathlib import Path
 
 app = FastAPI()
 
-features_list = pickle.load(open("image_features_embedding.pkl", "rb"))
-img_files_list = pickle.load(open("img_files.pkl", "rb"))
+features_list = pickle.load(open("embeddings.pkl", "rb"))
+img_files_list = pickle.load(open("filenames.pkl", "rb"))
 
 UPLOAD_DIRECTORY = Path("./uploads")
 UPLOAD_DIRECTORY.mkdir(exist_ok=True)
