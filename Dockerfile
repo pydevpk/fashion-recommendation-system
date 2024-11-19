@@ -9,6 +9,7 @@ COPY requirements.txt .
 COPY app.py .
 COPY embeddings.pkl .
 COPY filenames.pkl .
+COPY products.pkl .
 
 # Create the uploads directory and set permissions
 RUN mkdir -p /app/uploads && chmod 777 /app/uploads
