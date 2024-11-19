@@ -23,9 +23,9 @@ from datetime import datetime
 app = FastAPI()
 
 features_list = pickle.load(open("embeddings.pkl", "rb"))
-img_files_list = pickle.load(open("filenames.pkl", "rb"))
+img_files_list = pickle.load(open("products.pkl", "rb"))
 
-UPLOAD_DIRECTORY = Path("/app/uploads")
+UPLOAD_DIRECTORY = Path("uploads")
 UPLOAD_DIRECTORY.mkdir(parents=True, exist_ok=True)
 
 model = ResNet50(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
@@ -55,7 +55,16 @@ def recommendd(features, features_list):
     return indices
 
 def sanitize_filename(filename: str) -> str:
-    return os.path.basename(filename) or f"image_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+    return f"image_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+
+def get_indices(lst, targets):
+    indices = []
+    for target in targets[0]:
+        try:
+            indices.append(lst[target])
+        except:
+            print('ERROR: indices not found.', target)
+    return indices
 
 
 @app.get("/")
@@ -72,9 +81,6 @@ def check_gpu():
 @app.post("/predict/")
 async def predict(file: UploadFile = File(...)):
     # Save the uploaded file to the UPLOAD_DIRECTORY
-    print(f"UPLOAD_DIRECTORY: {UPLOAD_DIRECTORY}")
-    print(f"file.filename: {file.filename}")
-    print(f"Sanitized filename: {sanitize_filename(file.filename)}")
     sanitized_filename = sanitize_filename(file.filename)
     file_path = UPLOAD_DIRECTORY / sanitized_filename
     with open(file_path, "wb") as buffer:
@@ -83,7 +89,6 @@ async def predict(file: UploadFile = File(...)):
     features = extract_img_features(file_path, model)
 
     img_indicess = recommendd(features, features_list)
-
-    # json_data = {"filename": file.filename, "message": "predicted", 'IDs': json.dumps(img_indicess)}
-    # return Response(content=json_data, media_type="application/json")
-    return {"filename": file.filename, "message": "predicted", 'IDs': img_indicess.tolist()}
+    img_indicess = img_indicess.tolist()
+    image_list = get_indices(img_files_list, img_indicess)
+    return {"filename": file.filename, "message": "predicted", 'IDs': image_list}

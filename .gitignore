@@ -3,3 +3,8 @@ dist
 build
 *.egg-info
 test.py
+embeddings.pkl
+filenames.pkl
+venv
+products.pkl
+uploads
