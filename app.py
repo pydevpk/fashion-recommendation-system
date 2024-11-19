@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi import UploadFile
 from fastapi import File
+from fastapi import Response
 
 import tensorflow
 import pandas as pd
@@ -75,4 +76,6 @@ async def predict(file: UploadFile = File(...)):
 
     img_indicess = recommendd(features, features_list)
 
-    return {"filename": file.filename, "message": "predicted", 'IDs': json.dumps(img_indicess)}
+    # json_data = {"filename": file.filename, "message": "predicted", 'IDs': json.dumps(img_indicess)}
+    # return Response(content=json_data, media_type="application/json")
+    return {"filename": file.filename, "message": "predicted", 'IDs': img_indicess.tolist()}

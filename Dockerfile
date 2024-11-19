@@ -1,5 +1,5 @@
 # Use TensorFlow GPU base image
-FROM tensorflow/tensorflow:2.13.0-gpu
+FROM python:3.9-slim
 
 # Set the working directory
 WORKDIR /app
@@ -7,6 +7,8 @@ WORKDIR /app
 # Copy the application code
 COPY requirements.txt .
 COPY app.py .
+COPY embeddings.pkl .
+COPY filenames.pkl .
 
 # Install FastAPI and Uvicorn
 RUN pip install --no-cache-dir -r requirements.txt
