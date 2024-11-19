@@ -10,6 +10,9 @@ COPY app.py .
 COPY embeddings.pkl .
 COPY filenames.pkl .
 
+# Create the uploads directory and set permissions
+RUN mkdir -p /app/uploads && chmod 777 /app/uploads
+
 # Install FastAPI and Uvicorn
 RUN pip install --no-cache-dir -r requirements.txt
 

@@ -18,14 +18,15 @@ from sklearn.neighbors import NearestNeighbors
 import os
 import json
 from pathlib import Path
+from datetime import datetime
 
 app = FastAPI()
 
 features_list = pickle.load(open("embeddings.pkl", "rb"))
 img_files_list = pickle.load(open("filenames.pkl", "rb"))
 
-UPLOAD_DIRECTORY = Path("./uploads")
-UPLOAD_DIRECTORY.mkdir(exist_ok=True)
+UPLOAD_DIRECTORY = Path("/app/uploads")
+UPLOAD_DIRECTORY.mkdir(parents=True, exist_ok=True)
 
 model = ResNet50(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
 model.trainable = False
@@ -53,6 +54,9 @@ def recommendd(features, features_list):
 
     return indices
 
+def sanitize_filename(filename: str) -> str:
+    return os.path.basename(filename) or f"image_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+
 
 @app.get("/")
 def read_root():
@@ -68,7 +72,11 @@ def check_gpu():
 @app.post("/predict/")
 async def predict(file: UploadFile = File(...)):
     # Save the uploaded file to the UPLOAD_DIRECTORY
-    file_path = UPLOAD_DIRECTORY / file.filename
+    print(f"UPLOAD_DIRECTORY: {UPLOAD_DIRECTORY}")
+    print(f"file.filename: {file.filename}")
+    print(f"Sanitized filename: {sanitize_filename(file.filename)}")
+    sanitized_filename = sanitize_filename(file.filename)
+    file_path = UPLOAD_DIRECTORY / sanitized_filename
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
     
