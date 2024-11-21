@@ -97,7 +97,7 @@ def find_categorical_similarity(product_row):
     query_combined_features = np.hstack(normalize_query_data)
 
     # Get nearest neighbors
-    distances, indices = r_model.kneighbors(query_combined_features, n_neighbors=5)
+    distances, indices = r_model.kneighbors(query_combined_features, n_neighbors=100)
 
     # Fetch recommended ITEM_IDs
     recommended_item_ids = data.iloc[indices[0]]['ITEM_ID'].tolist()
@@ -118,7 +118,7 @@ def extract_img_features(img_path, model):
     return result_normlized
 
 def recommendd(features, features_list):
-    neighbors = NearestNeighbors(n_neighbors=6, algorithm='brute', metric='euclidean')
+    neighbors = NearestNeighbors(n_neighbors=100, algorithm='brute', metric='euclidean')
     neighbors.fit(features_list)
 
     distence, indices = neighbors.kneighbors([features])
