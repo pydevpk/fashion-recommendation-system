@@ -182,6 +182,6 @@ def get_recommendate(item_id: int):
         common_elements = [item for item in image_list if int(item) in categorical_prediction]
         common_elements = common_elements[:100]
 
-        return {"status": True, "message":"Predicted successfully.", 'array': common_elements}
+        return {"status": True, "message":"Predicted successfully.", 'image_based': image_list, 'categorical_based': categorical_prediction, 'array': common_elements}
     else:
         return {"status": False, "message":"Item ID not found, please check again!"}
