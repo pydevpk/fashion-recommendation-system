@@ -17,10 +17,19 @@ from numpy.linalg import norm
 from sklearn.neighbors import NearestNeighbors
 import os
 import json
+import joblib
 from pathlib import Path
 from datetime import datetime
+import requests
 
 app = FastAPI()
+
+data = pd.read_csv("ASHI_FINAL_DATA.csv")
+
+# Load saved encoders and model
+encoders = joblib.load('column_encoders.pkl')
+combined_features = joblib.load('combined_features.pkl')
+r_model = joblib.load('categorical_recommendation_model.pkl')
 
 features_list = pickle.load(open("embeddings.pkl", "rb"))
 img_files_list = pickle.load(open("products.pkl", "rb"))
@@ -32,6 +41,68 @@ model = ResNet50(weights="imagenet", include_top=False, input_shape=(224, 224, 3
 model.trainable = False
 
 model = Sequential([model, GlobalMaxPooling2D()])
+
+
+def sanitize_filename() -> str:
+    return f"image_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+
+def download_image(image_url, save_directory="uploads"):
+    try:
+        # Make a GET request to fetch the image
+        response = requests.get(image_url, stream=True)
+        response.raise_for_status()  # Raise an error for bad status codes (e.g., 404)
+
+        # Create the directory if it doesn't exist
+        os.makedirs(save_directory, exist_ok=True)
+
+        # Use the provided filename or extract it from the URL
+        filename = sanitize_filename()
+        
+        save_path = os.path.join(save_directory, filename)
+
+        # Write the image to the file
+        with open(save_path, "wb") as file:
+            for chunk in response.iter_content(1024):
+                file.write(chunk)
+
+        print(f"Image saved to {save_path}")
+        return save_path
+    except Exception as e:
+        print(f"Failed to download image: {e}")
+        return None
+    
+
+def normalize_query(query):
+    # Normalize and encode query
+    query_encoded_columns = []
+    for col, value in query.items():
+        normalized_value = sorted(set(value.split(', ')))
+        query_encoded = encoders[col].transform([normalized_value])
+        query_encoded_columns.append(query_encoded)
+    
+    return query_encoded_columns
+
+def find_categorical_similarity(product_row):
+    query = {
+            "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+            "METAL_COLOR": product_row["METAL_COLOR"],
+            "COLOR_STONE": product_row["COLOR_STONE"],
+            "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+            "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+            "ITEM_TYPE": product_row["ITEM_TYPE"],
+        }
+    
+    normalize_query_data = normalize_query(query)
+    # Combine encoded query features
+    query_combined_features = np.hstack(normalize_query_data)
+
+    # Get nearest neighbors
+    distances, indices = r_model.kneighbors(query_combined_features, n_neighbors=5)
+
+    # Fetch recommended ITEM_IDs
+    recommended_item_ids = data.iloc[indices[0]]['ITEM_ID'].tolist()
+    print("Recommended ITEM_IDs:", recommended_item_ids)
+    return recommended_item_ids
 
 
 def extract_img_features(img_path, model):
@@ -54,8 +125,6 @@ def recommendd(features, features_list):
 
     return indices
 
-def sanitize_filename(filename: str) -> str:
-    return f"image_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
 
 def get_indices(lst, targets):
     indices = []
@@ -92,3 +161,23 @@ async def predict(file: UploadFile = File(...)):
     img_indicess = img_indicess.tolist()
     image_list = get_indices(img_files_list, img_indicess)
     return {"filename": file.filename, "message": "predicted", 'IDs': image_list}
+
+
+@app.get("/recoomendate/{item_id}")
+def get_recommendate(item_id: int):
+    if item_id in data["ITEM_ID"].values:
+        product_row = data.loc[data["ITEM_ID"] == item_id].iloc[0]
+        categorical_prediction = find_categorical_similarity(product_row=product_row)
+
+        image_url = product_row['IMAGE_URL_VIEW_1']
+        download_file = download_image(image_url=image_url)
+        if download_file is None and len(categorical_prediction) == 0:
+            return {"status": False, "message":"Invalid image or item ID, please check again!"}
+        features = extract_img_features(download_file, model)
+        img_indicess = recommendd(features, features_list)
+        img_indicess = img_indicess.tolist()
+        image_list = get_indices(img_files_list, img_indicess)
+
+        return {"status": True, "message":"Predicted successfully.", 'image_based': image_list, 'categorical_based': categorical_prediction}
+    else:
+        return {"status": False, "message":"Item ID not found, please check again!"}

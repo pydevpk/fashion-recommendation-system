@@ -7,4 +7,12 @@ embeddings.pkl
 filenames.pkl
 venv
 products.pkl
+categorical_recommendation_model.pkl
+column_encoders.pkl
+combined_features.pkl
+*.csv
+*.csv#
 uploads
+env
+.env
+category_r.py

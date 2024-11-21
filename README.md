@@ -10,6 +10,13 @@ This project is to dedicated to find similarity between images using cosine simi
     ```bash
     docker build -t fastapi-app .
     ```
+
+    or with AWS credentials
+
+    ```bash
+    docker build -t fastapi-app . --build-arg AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID> --build-arg AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> --build-arg AWS_DEFAULT_REGION=<AWS_DEFAULT_REGION>
+
+    ```
     - Run the container:
 
     ```bash
@@ -113,6 +120,12 @@ This project is to dedicated to find similarity between images using cosine simi
     - Build and start the containers:
 
     ```bash
+    docker-compose up --build -d
+    ```
+    or with AWS credentials
+
+    ```bash
+    AWS_ACCESS_KEY_ID=AKIAYOURACCESSKEY AWS_SECRET_ACCESS_KEY=yoursecretkey AWS_DEFAULT_REGION=us-west-2 \
     docker-compose up --build -d
     ```
 
