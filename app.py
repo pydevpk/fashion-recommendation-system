@@ -178,6 +178,10 @@ def get_recommendate(item_id: int):
         img_indicess = img_indicess.tolist()
         image_list = get_indices(img_files_list, img_indicess)
 
-        return {"status": True, "message":"Predicted successfully.", 'image_based': image_list, 'categorical_based': categorical_prediction}
+        # Find common elements in the order of `image_based`
+        common_elements = [item for item in image_list if int(item) in categorical_prediction]
+        common_elements = common_elements[:100]
+
+        return {"status": True, "message":"Predicted successfully.", 'array': common_elements}
     else:
         return {"status": False, "message":"Item ID not found, please check again!"}
