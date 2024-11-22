@@ -1,8 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates  
 from fastapi import UploadFile
 from fastapi import File
 from fastapi import Response
 
+import faiss
 import tensorflow
 import pandas as pd
 from PIL import Image
@@ -15,6 +19,7 @@ from tensorflow.keras.layers import GlobalMaxPooling2D
 from tensorflow.keras.models import Sequential
 from numpy.linalg import norm
 from sklearn.neighbors import NearestNeighbors
+from sklearn.preprocessing import normalize
 import os
 import json
 import joblib
@@ -23,6 +28,8 @@ from datetime import datetime
 import requests
 
 app = FastAPI()
+
+templates = Jinja2Templates(directory="templates")
 
 data = pd.read_csv("ASHI_FINAL_DATA.csv")
 
@@ -33,6 +40,7 @@ r_model = joblib.load('categorical_recommendation_model.pkl')
 
 features_list = pickle.load(open("embeddings.pkl", "rb"))
 img_files_list = pickle.load(open("products.pkl", "rb"))
+# print(features_list, img_files_list[8297])
 
 UPLOAD_DIRECTORY = Path("uploads")
 UPLOAD_DIRECTORY.mkdir(parents=True, exist_ok=True)
@@ -88,8 +96,6 @@ def find_categorical_similarity(product_row):
             "METAL_COLOR": product_row["METAL_COLOR"],
             "COLOR_STONE": product_row["COLOR_STONE"],
             "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
-            "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
-            "ITEM_TYPE": product_row["ITEM_TYPE"],
         }
     
     normalize_query_data = normalize_query(query)
@@ -118,12 +124,13 @@ def extract_img_features(img_path, model):
     return result_normlized
 
 def recommendd(features, features_list):
-    neighbors = NearestNeighbors(n_neighbors=100, algorithm='brute', metric='euclidean')
+    neighbors = NearestNeighbors(n_neighbors=60, algorithm='brute', metric='euclidean')
     neighbors.fit(features_list)
 
     distence, indices = neighbors.kneighbors([features])
 
     return indices
+    
 
 
 def get_indices(lst, targets):
@@ -185,3 +192,90 @@ def get_recommendate(item_id: int):
         return {"status": True, "message":"Predicted successfully.", 'image_based': image_list, 'categorical_based': categorical_prediction, 'array': common_elements}
     else:
         return {"status": False, "message":"Item ID not found, please check again!"}
+
+
+@app.get("/items/{id}", response_class=HTMLResponse)
+async def read_item(request: Request, id: int):
+    try:
+        product_row = data.loc[data["ITEM_ID"] == id].iloc[0]
+    except:
+        return templates.TemplateResponse(
+        request=request, name="item.html", context={"Error": True}
+    )
+    p_r = product_row
+    categorical_prediction = find_categorical_similarity(product_row=product_row)
+
+    image_url = product_row['IMAGE_URL_VIEW_1']
+    download_file = download_image(image_url=image_url)
+    if download_file is None and len(categorical_prediction) == 0:
+        return {"status": False, "message":"Invalid image or item ID, please check again!"}
+    features = extract_img_features(download_file, model)
+    img_indicess = recommendd(features, features_list)
+    img_indicess = img_indicess.tolist()
+    image_list = get_indices(img_files_list, img_indicess)
+
+    # Find common elements in the order of `image_based`
+    common_elements = [item for item in image_list if int(item) in categorical_prediction]
+    common_elements = common_elements[:100]
+
+    search_query = {
+            "ITEM_ID": product_row["ITEM_ID"],
+            "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+            "METAL_COLOR": product_row["METAL_COLOR"],
+            "COLOR_STONE": product_row["COLOR_STONE"],
+            "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+            "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+            "ITEM_TYPE": product_row["ITEM_TYPE"],
+            "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+        }
+
+    image_based = []
+    for i in image_list:
+        i = int(i)
+        product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+        query = {
+            "ITEM_ID": product_row["ITEM_ID"],
+            "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+            "METAL_COLOR": product_row["METAL_COLOR"],
+            "COLOR_STONE": product_row["COLOR_STONE"],
+            "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+            "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+            "ITEM_TYPE": product_row["ITEM_TYPE"],
+            "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+        }
+        image_based.append(query)
+    attribute_based = []
+    for i in categorical_prediction:
+        product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+        query = {
+            "ITEM_ID": product_row["ITEM_ID"],
+            "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+            "METAL_COLOR": product_row["METAL_COLOR"],
+            "COLOR_STONE": product_row["COLOR_STONE"],
+            "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+            "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+            "ITEM_TYPE": product_row["ITEM_TYPE"],
+            "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+        }
+        attribute_based.append(query)
+    common = []
+    for i in common_elements:
+        i = int(i)
+        product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+        PRODUCT_STYLE = p_r['PRODUCT_STYLE']
+        ITEM_TYPE = p_r['ITEM_TYPE']
+        if set(PRODUCT_STYLE.split(',')) == set(product_row["PRODUCT_STYLE"].split(',')) and set(ITEM_TYPE.split(',')) == set(product_row["ITEM_TYPE"].split(',')):
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            common.append(query)
+    return templates.TemplateResponse(
+        request=request, name="item.html", context={"image_based": image_based, "attribute_based":attribute_based, "common":common, "search_query":search_query}
+    )
