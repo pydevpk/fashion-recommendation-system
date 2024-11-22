@@ -26,9 +26,13 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     ./aws/install && \
     rm -rf awscliv2.zip aws
 
+
+RUN mkdir -p /app/templates && chmod 777 /app/uploads
+
 # Copy the application code
 COPY requirements.txt .
 COPY app.py .
+COPY ./templates /app/templates
 # COPY .env .
 
 # Create the uploads directory and set permissions
