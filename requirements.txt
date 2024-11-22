@@ -6,3 +6,4 @@ pandas
 Pillow
 tensorflow
 python-multipart
+jinja2

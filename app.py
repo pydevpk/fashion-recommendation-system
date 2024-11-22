@@ -6,7 +6,7 @@ from fastapi import UploadFile
 from fastapi import File
 from fastapi import Response
 
-import faiss
+# import faiss
 import tensorflow
 import pandas as pd
 from PIL import Image

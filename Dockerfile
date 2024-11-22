@@ -27,7 +27,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     rm -rf awscliv2.zip aws
 
 
-RUN mkdir -p /app/templates && chmod 777 /app/uploads
+RUN mkdir -p /app/templates && chmod 777 /app/templates
 
 # Copy the application code
 COPY requirements.txt .
