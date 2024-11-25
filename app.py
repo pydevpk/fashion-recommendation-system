@@ -90,7 +90,7 @@ def normalize_query(query):
     
     return query_encoded_columns
 
-def find_categorical_similarity(product_row):
+def find_categorical_similarity(product_row, filtered_data, k):
     query = {
             "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
             "METAL_COLOR": product_row["METAL_COLOR"],
@@ -103,12 +103,17 @@ def find_categorical_similarity(product_row):
     query_combined_features = np.hstack(normalize_query_data)
 
     # Get nearest neighbors
-    distances, indices = r_model.kneighbors(query_combined_features, n_neighbors=100)
+    neighbors = NearestNeighbors(n_neighbors=k, algorithm='brute', metric='euclidean')
+    neighbors.fit(filtered_data)
+    # print(combined_features, type(combined_features))
+    distence, indices = neighbors.kneighbors(query_combined_features)
+    # print(distence, 'ddddddddddddddddddd', indices)
+    # distances, indices = r_model.kneighbors(query_combined_features, n_neighbors=20)
 
     # Fetch recommended ITEM_IDs
     recommended_item_ids = data.iloc[indices[0]]['ITEM_ID'].tolist()
-    print("Recommended ITEM_IDs:", recommended_item_ids)
-    return recommended_item_ids
+    # print("Recommended ITEM_IDs:", recommended_item_ids)
+    return indices
 
 
 def extract_img_features(img_path, model):
@@ -203,18 +208,30 @@ async def read_item(request: Request, id: int):
         request=request, name="item.html", context={"Error": True}
     )
     p_r = product_row
-    categorical_prediction = find_categorical_similarity(product_row=product_row)
 
     image_url = product_row['IMAGE_URL_VIEW_1']
     download_file = download_image(image_url=image_url)
-    if download_file is None and len(categorical_prediction) == 0:
+    if download_file is None:
         return {"status": False, "message":"Invalid image or item ID, please check again!"}
     features = extract_img_features(download_file, model)
     img_indicess = recommendd(features, features_list)
     img_indicess = img_indicess.tolist()
     image_list = get_indices(img_files_list, img_indicess)
-
-    # Find common elements in the order of `image_based`
+    filtered_data = []
+    image_list2 = [int(item) for item in image_list]
+    indices = data.index[data["ITEM_ID"].isin(image_list2)].tolist()
+    # print(indices, 'iiiiiiiiiiiiiiiiiiiiiiiiiiiii')
+    for ind in indices:
+        filtered_data.append(combined_features[ind])
+    # print(np.array(combined_features).shape, '--------------------------------------------------------', np.array(filtered_data).shape)
+    k = 20
+    if len(filtered_data)< 20:
+        k = len(filtered_data)
+    categorical_prediction = find_categorical_similarity(product_row=product_row, filtered_data=filtered_data, k=k)
+    final_indices = []
+    for i in categorical_prediction[0]:
+        final_indices.append(indices[i])
+    final_data_ids = data.iloc[final_indices]['ITEM_ID'].tolist()
     common_elements = [item for item in image_list if int(item) in categorical_prediction]
     common_elements = common_elements[:100]
 
@@ -245,7 +262,7 @@ async def read_item(request: Request, id: int):
         }
         image_based.append(query)
     attribute_based = []
-    for i in categorical_prediction:
+    for i in final_data_ids:
         product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
         query = {
             "ITEM_ID": product_row["ITEM_ID"],
@@ -264,18 +281,18 @@ async def read_item(request: Request, id: int):
         product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
         PRODUCT_STYLE = p_r['PRODUCT_STYLE']
         ITEM_TYPE = p_r['ITEM_TYPE']
-        if set(PRODUCT_STYLE.split(',')) == set(product_row["PRODUCT_STYLE"].split(',')) and set(ITEM_TYPE.split(',')) == set(product_row["ITEM_TYPE"].split(',')):
-            query = {
-                "ITEM_ID": product_row["ITEM_ID"],
-                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
-                "METAL_COLOR": product_row["METAL_COLOR"],
-                "COLOR_STONE": product_row["COLOR_STONE"],
-                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
-                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
-                "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
-            }
-            common.append(query)
+        # if set(PRODUCT_STYLE.split(',')) == set(product_row["PRODUCT_STYLE"].split(',')) and set(ITEM_TYPE.split(',')) == set(product_row["ITEM_TYPE"].split(',')):
+        query = {
+            "ITEM_ID": product_row["ITEM_ID"],
+            "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+            "METAL_COLOR": product_row["METAL_COLOR"],
+            "COLOR_STONE": product_row["COLOR_STONE"],
+            "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+            "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+            "ITEM_TYPE": product_row["ITEM_TYPE"],
+            "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+        }
+        common.append(query)
     return templates.TemplateResponse(
         request=request, name="item.html", context={"image_based": image_based, "attribute_based":attribute_based, "common":common, "search_query":search_query}
     )
