@@ -224,8 +224,8 @@ async def read_item(request: Request, id: int):
     for ind in indices:
         filtered_data.append(combined_features[ind])
     # print(np.array(combined_features).shape, '--------------------------------------------------------', np.array(filtered_data).shape)
-    k = 20
-    if len(filtered_data)< 20:
+    k = 30
+    if len(filtered_data)< 30:
         k = len(filtered_data)
     categorical_prediction = find_categorical_similarity(product_row=product_row, filtered_data=filtered_data, k=k)
     final_indices = []
@@ -264,23 +264,24 @@ async def read_item(request: Request, id: int):
     attribute_based = []
     for i in final_data_ids:
         product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
-        query = {
-            "ITEM_ID": product_row["ITEM_ID"],
-            "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
-            "METAL_COLOR": product_row["METAL_COLOR"],
-            "COLOR_STONE": product_row["COLOR_STONE"],
-            "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
-            "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
-            "ITEM_TYPE": product_row["ITEM_TYPE"],
-            "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
-        }
-        attribute_based.append(query)
+        PRODUCT_STYLE = p_r['PRODUCT_STYLE']
+        ITEM_TYPE = p_r['ITEM_TYPE']
+        if set(sorted(ITEM_TYPE.split(','))) == set(sorted(product_row["ITEM_TYPE"].split(','))):
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
     common = []
     for i in common_elements:
         i = int(i)
         product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
-        PRODUCT_STYLE = p_r['PRODUCT_STYLE']
-        ITEM_TYPE = p_r['ITEM_TYPE']
         # if set(PRODUCT_STYLE.split(',')) == set(product_row["PRODUCT_STYLE"].split(',')) and set(ITEM_TYPE.split(',')) == set(product_row["ITEM_TYPE"].split(',')):
         query = {
             "ITEM_ID": product_row["ITEM_ID"],
