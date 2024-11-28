@@ -3,7 +3,7 @@ uvicorn
 scikit-learn
 numpy
 pandas
-Pillow
-tensorflow
+# Pillow
+# tensorflow
 python-multipart
 jinja2

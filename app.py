@@ -7,16 +7,16 @@ from fastapi import File
 from fastapi import Response
 
 # import faiss
-import tensorflow
+# import tensorflow
 import pandas as pd
 from PIL import Image
 import pickle
 import shutil
 import numpy as np
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
-from tensorflow.keras.layers import GlobalMaxPooling2D
-from tensorflow.keras.models import Sequential
+# from tensorflow.keras.preprocessing import image
+# from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
+# from tensorflow.keras.layers import GlobalMaxPooling2D
+# from tensorflow.keras.models import Sequential
 from numpy.linalg import norm
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import normalize
@@ -36,7 +36,7 @@ data = pd.read_csv("ASHI_FINAL_DATA.csv")
 # Load saved encoders and model
 encoders = joblib.load('column_encoders.pkl')
 combined_features = joblib.load('combined_features.pkl')
-r_model = joblib.load('categorical_recommendation_model.pkl')
+# r_model = joblib.load('categorical_recommendation_model.pkl')
 
 features_list = pickle.load(open("embeddings.pkl", "rb"))
 img_files_list = pickle.load(open("products.pkl", "rb"))
@@ -45,10 +45,10 @@ img_files_list = pickle.load(open("products.pkl", "rb"))
 UPLOAD_DIRECTORY = Path("uploads")
 UPLOAD_DIRECTORY.mkdir(parents=True, exist_ok=True)
 
-model = ResNet50(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
-model.trainable = False
+# model = ResNet50(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
+# model.trainable = False
 
-model = Sequential([model, GlobalMaxPooling2D()])
+# model = Sequential([model, GlobalMaxPooling2D()])
 
 
 def sanitize_filename() -> str:
@@ -96,6 +96,7 @@ def find_categorical_similarity(product_row, filtered_data, k):
             "METAL_COLOR": product_row["METAL_COLOR"],
             "COLOR_STONE": product_row["COLOR_STONE"],
             "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+            "ITEM_TYPE": product_row["ITEM_TYPE"]
         }
     
     normalize_query_data = normalize_query(query)
@@ -129,10 +130,14 @@ def extract_img_features(img_path, model):
     return result_normlized
 
 def recommendd(features, features_list):
+    # features_list = np.array(features_list)
+    # features = features.tolist()
+    # features_list = features_list.tolist()
+    # print(len(features[0]), len(features_list[0]), 'mmmmmmmmmmmmmmmmmmmmm')
     neighbors = NearestNeighbors(n_neighbors=60, algorithm='brute', metric='euclidean')
     neighbors.fit(features_list)
 
-    distence, indices = neighbors.kneighbors([features])
+    distence, indices = neighbors.kneighbors(features)
 
     return indices
     
@@ -199,6 +204,7 @@ def get_recommendate(item_id: int):
         return {"status": False, "message":"Item ID not found, please check again!"}
 
 
+
 @app.get("/items/{id}", response_class=HTMLResponse)
 async def read_item(request: Request, id: int):
     try:
@@ -209,28 +215,33 @@ async def read_item(request: Request, id: int):
     )
     p_r = product_row
 
-    image_url = product_row['IMAGE_URL_VIEW_1']
-    download_file = download_image(image_url=image_url)
-    if download_file is None:
-        return {"status": False, "message":"Invalid image or item ID, please check again!"}
-    features = extract_img_features(download_file, model)
-    img_indicess = recommendd(features, features_list)
+    product_index = data.index[data["ITEM_ID"] == id].to_list()[0]
+
+
+    features_list_array = np.array(features_list)
+    features = np.array([features_list_array[product_index]])
+
+    normalized_features_1 = features.reshape(features.shape[0], -1)
+    normalized_features_2 = features_list_array.reshape(features_list_array.shape[0], -1)
+    # print(features_list, 'fffffffffffffffffff')
+    
+    img_indicess = recommendd(normalized_features_1, normalized_features_2)
     img_indicess = img_indicess.tolist()
     image_list = get_indices(img_files_list, img_indicess)
     filtered_data = []
-    image_list2 = [int(item) for item in image_list]
-    indices = data.index[data["ITEM_ID"].isin(image_list2)].tolist()
-    # print(indices, 'iiiiiiiiiiiiiiiiiiiiiiiiiiiii')
-    for ind in indices:
+    # image_list2 = [int(item) for item in image_list]
+    # indices = data.index[data["ITEM_ID"].isin(image_list2)].tolist()
+    for ind in img_indicess[0]:
         filtered_data.append(combined_features[ind])
-    # print(np.array(combined_features).shape, '--------------------------------------------------------', np.array(filtered_data).shape)
+
     k = 30
     if len(filtered_data)< 30:
         k = len(filtered_data)
     categorical_prediction = find_categorical_similarity(product_row=product_row, filtered_data=filtered_data, k=k)
+    
     final_indices = []
     for i in categorical_prediction[0]:
-        final_indices.append(indices[i])
+        final_indices.append(img_indicess[0][i])
     final_data_ids = data.iloc[final_indices]['ITEM_ID'].tolist()
     common_elements = [item for item in image_list if int(item) in categorical_prediction]
     common_elements = common_elements[:100]

@@ -40,12 +40,12 @@ RUN mkdir -p /app/uploads && chmod 777 /app/uploads
 
 # Download required files from S3
 # Replace `<S3_BUCKET>` and `<S3_KEY>` with the actual S3 bucket and object keys
-RUN aws s3 cp s3://ashi-similar-styles-ai-engine/embeddings/embeddings.pkl /app/embeddings.pkl && \
-    aws s3 cp s3://ashi-similar-styles-ai-engine/embeddings/products.pkl /app/products.pkl && \
-    aws s3 cp s3://ashi-similar-styles-ai-engine/embeddings/column_encoders.pkl /app/column_encoders.pkl && \
-    aws s3 cp s3://ashi-similar-styles-ai-engine/embeddings/combined_features.pkl /app/combined_features.pkl && \
-    aws s3 cp s3://ashi-similar-styles-ai-engine/embeddings/categorical_recommendation_model.pkl /app/categorical_recommendation_model.pkl && \
-    aws s3 cp s3://ashi-similar-styles-ai-engine/jewelry-data/ASHI_FINAL_DATA.csv /app/ASHI_FINAL_DATA.csv
+RUN aws s3 cp s3://ashi-similar-styles-ai-engine/v1/embeddings/embeddings.pkl /app/embeddings.pkl && \
+    aws s3 cp s3://ashi-similar-styles-ai-engine/v1/embeddings/products.pkl /app/products.pkl && \
+    aws s3 cp s3://ashi-similar-styles-ai-engine/v1/embeddings/column_encoders.pkl /app/column_encoders.pkl && \
+    aws s3 cp s3://ashi-similar-styles-ai-engine/v1/embeddings/combined_features.pkl /app/combined_features.pkl && \
+    # aws s3 cp s3://ashi-similar-styles-ai-engine/v1/embeddings/categorical_recommendation_model.pkl /app/categorical_recommendation_model.pkl && \
+    aws s3 cp s3://ashi-similar-styles-ai-engine/v1/data/ASHI_FINAL_DATA.csv /app/ASHI_FINAL_DATA.csv
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
