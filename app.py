@@ -134,7 +134,7 @@ def recommendd(features, features_list):
     # features = features.tolist()
     # features_list = features_list.tolist()
     # print(len(features[0]), len(features_list[0]), 'mmmmmmmmmmmmmmmmmmmmm')
-    neighbors = NearestNeighbors(n_neighbors=60, algorithm='brute', metric='euclidean')
+    neighbors = NearestNeighbors(n_neighbors=100, algorithm='brute', metric='euclidean')
     neighbors.fit(features_list)
 
     distence, indices = neighbors.kneighbors(features)
@@ -234,8 +234,8 @@ async def read_item(request: Request, id: int):
     for ind in img_indicess[0]:
         filtered_data.append(combined_features[ind])
 
-    k = 30
-    if len(filtered_data)< 30:
+    k = 100
+    if len(filtered_data)< 100:
         k = len(filtered_data)
     categorical_prediction = find_categorical_similarity(product_row=product_row, filtered_data=filtered_data, k=k)
     
@@ -277,7 +277,8 @@ async def read_item(request: Request, id: int):
         product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
         PRODUCT_STYLE = p_r['PRODUCT_STYLE']
         ITEM_TYPE = p_r['ITEM_TYPE']
-        if set(sorted(ITEM_TYPE.split(','))) == set(sorted(product_row["ITEM_TYPE"].split(','))):
+        Category_type = p_r['CATEGORY_TYPE']
+        if set(sorted(ITEM_TYPE.split(','))) == set(sorted(product_row["ITEM_TYPE"].split(','))) and set(sorted(Category_type.split(','))) == set(sorted(product_row["CATEGORY_TYPE"].split(','))):
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
                 "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
@@ -289,6 +290,7 @@ async def read_item(request: Request, id: int):
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
             }
             attribute_based.append(query)
+    print(len(attribute_based), 'llllllllllllllllllllllllll')
     common = []
     for i in common_elements:
         i = int(i)
