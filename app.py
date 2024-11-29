@@ -25,7 +25,7 @@ import json
 import joblib
 from pathlib import Path
 from datetime import datetime
-import requests
+# import requests
 
 app = FastAPI()
 
