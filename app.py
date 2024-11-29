@@ -134,7 +134,7 @@ def recommendd(features, features_list):
     # features = features.tolist()
     # features_list = features_list.tolist()
     # print(len(features[0]), len(features_list[0]), 'mmmmmmmmmmmmmmmmmmmmm')
-    neighbors = NearestNeighbors(n_neighbors=100, algorithm='brute', metric='euclidean')
+    neighbors = NearestNeighbors(n_neighbors=150, algorithm='brute', metric='euclidean')
     neighbors.fit(features_list)
 
     distence, indices = neighbors.kneighbors(features)
@@ -234,8 +234,8 @@ async def read_item(request: Request, id: int):
     for ind in img_indicess[0]:
         filtered_data.append(combined_features[ind])
 
-    k = 100
-    if len(filtered_data)< 100:
+    k = 150
+    if len(filtered_data)< 150:
         k = len(filtered_data)
     categorical_prediction = find_categorical_similarity(product_row=product_row, filtered_data=filtered_data, k=k)
     
@@ -310,3 +310,58 @@ async def read_item(request: Request, id: int):
     return templates.TemplateResponse(
         request=request, name="item.html", context={"image_based": image_based, "attribute_based":attribute_based, "common":common, "search_query":search_query}
     )
+
+
+
+import csv
+def calculate_prediction_count():
+    final_data = []
+    for index, row in data.iterrows():
+        id = row['ITEM_ID']
+        print("PROCESSING: ", id, '------------INDEX----------------- ', index)
+        try:
+            product_row = data.loc[data["ITEM_ID"] == id].iloc[0]
+        except:
+            continue
+
+        p_r = product_row
+
+        product_index = data.index[data["ITEM_ID"] == id].to_list()[0]
+
+
+        features_list_array = np.array(features_list)
+        features = np.array([features_list_array[product_index]])
+
+        normalized_features_1 = features.reshape(features.shape[0], -1)
+        normalized_features_2 = features_list_array.reshape(features_list_array.shape[0], -1)
+
+        img_indicess = recommendd(normalized_features_1, normalized_features_2)
+        img_indicess = img_indicess.tolist()
+        image_list = get_indices(img_files_list, img_indicess)
+        filtered_data = []
+        for ind in img_indicess[0]:
+            filtered_data.append(combined_features[ind])
+
+        k = 100
+        if len(filtered_data)< 100:
+            k = len(filtered_data)
+        categorical_prediction = find_categorical_similarity(product_row=product_row, filtered_data=filtered_data, k=k)
+
+        final_indices = []
+        for i in categorical_prediction[0]:
+            final_indices.append(img_indicess[0][i])
+        final_data_ids = data.iloc[final_indices]['ITEM_ID'].tolist()
+        final_data.append({
+            "input_id": id,
+            "count": len(final_data_ids)
+        })
+        print("PROCESSED: ", id, '++++++++++++++++++++++++++++INDEX++++++++++++++++++++++++++ ', index)
+    
+    with open('prediction_count.csv', 'w', newline='') as csvfile:
+        fieldnames = ['input_id', 'count']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(final_data)
+
+
+# calculate_prediction_count()
