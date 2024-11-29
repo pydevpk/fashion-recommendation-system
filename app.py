@@ -9,7 +9,7 @@ from fastapi import Response
 # import faiss
 # import tensorflow
 import pandas as pd
-from PIL import Image
+# from PIL import Image
 import pickle
 import shutil
 import numpy as np
