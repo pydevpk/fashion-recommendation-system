@@ -109,7 +109,7 @@ def extract_img_features(img_path, model):
 """
 
 def recommendd(features, features_list):
-    neighbors = NearestNeighbors(n_neighbors=100, algorithm='brute', metric='euclidean')
+    neighbors = NearestNeighbors(n_neighbors=50, algorithm='brute', metric='euclidean')
     neighbors.fit(features_list)
 
     distence, indices = neighbors.kneighbors(features)
@@ -160,8 +160,8 @@ def get_recommendate(item_id: int):
         for ind in img_indicess[0]:
             filtered_data.append(combined_features[ind])
 
-        k = 100
-        if len(filtered_data)< 100:
+        k = 50
+        if len(filtered_data)< 50:
             k = len(filtered_data)
         categorical_prediction = find_categorical_similarity(product_row=product_row, filtered_data=filtered_data, k=k)
         
@@ -214,8 +214,8 @@ async def read_item(request: Request, id: int):
     for ind in img_indicess[0]:
         filtered_data.append(combined_features[ind])
 
-    k = 100
-    if len(filtered_data)< 100:
+    k = 50
+    if len(filtered_data)< 50:
         k = len(filtered_data)
     categorical_prediction = find_categorical_similarity(product_row=product_row, filtered_data=filtered_data, k=k)
     
