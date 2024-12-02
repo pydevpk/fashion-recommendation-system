@@ -6,26 +6,15 @@ from fastapi import UploadFile
 from fastapi import File
 from fastapi import Response
 
-# import faiss
-# import tensorflow
 import pandas as pd
-# from PIL import Image
 import pickle
-import shutil
 import numpy as np
-# from tensorflow.keras.preprocessing import image
-# from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
-# from tensorflow.keras.layers import GlobalMaxPooling2D
-# from tensorflow.keras.models import Sequential
 from numpy.linalg import norm
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import normalize
-import os
-import json
 import joblib
 from pathlib import Path
 from datetime import datetime
-# import requests
 
 app = FastAPI()
 
@@ -36,24 +25,18 @@ data = pd.read_csv("ASHI_FINAL_DATA.csv")
 # Load saved encoders and model
 encoders = joblib.load('column_encoders.pkl')
 combined_features = joblib.load('combined_features.pkl')
-# r_model = joblib.load('categorical_recommendation_model.pkl')
 
 features_list = pickle.load(open("embeddings.pkl", "rb"))
 img_files_list = pickle.load(open("products.pkl", "rb"))
-# print(features_list, img_files_list[8297])
 
 UPLOAD_DIRECTORY = Path("uploads")
 UPLOAD_DIRECTORY.mkdir(parents=True, exist_ok=True)
-
-# model = ResNet50(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
-# model.trainable = False
-
-# model = Sequential([model, GlobalMaxPooling2D()])
 
 
 def sanitize_filename() -> str:
     return f"image_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
 
+"""
 def download_image(image_url, save_directory="uploads"):
     try:
         # Make a GET request to fetch the image
@@ -78,7 +61,7 @@ def download_image(image_url, save_directory="uploads"):
     except Exception as e:
         print(f"Failed to download image: {e}")
         return None
-    
+"""
 
 def normalize_query(query):
     # Normalize and encode query
@@ -106,17 +89,12 @@ def find_categorical_similarity(product_row, filtered_data, k):
     # Get nearest neighbors
     neighbors = NearestNeighbors(n_neighbors=k, algorithm='brute', metric='euclidean')
     neighbors.fit(filtered_data)
-    # print(combined_features, type(combined_features))
     distence, indices = neighbors.kneighbors(query_combined_features)
-    # print(distence, 'ddddddddddddddddddd', indices)
-    # distances, indices = r_model.kneighbors(query_combined_features, n_neighbors=20)
-
-    # Fetch recommended ITEM_IDs
-    recommended_item_ids = data.iloc[indices[0]]['ITEM_ID'].tolist()
-    # print("Recommended ITEM_IDs:", recommended_item_ids)
+    # recommended_item_ids = data.iloc[indices[0]]['ITEM_ID'].tolist()
     return indices
 
 
+"""
 def extract_img_features(img_path, model):
     img = image.load_img(img_path, target_size=(224, 224))
     img_array = image.img_to_array(img)
@@ -128,12 +106,9 @@ def extract_img_features(img_path, model):
     result_normlized = flatten_result / norm(flatten_result)
 
     return result_normlized
+"""
 
 def recommendd(features, features_list):
-    # features_list = np.array(features_list)
-    # features = features.tolist()
-    # features_list = features_list.tolist()
-    # print(len(features[0]), len(features_list[0]), 'mmmmmmmmmmmmmmmmmmmmm')
     neighbors = NearestNeighbors(n_neighbors=150, algorithm='brute', metric='euclidean')
     neighbors.fit(features_list)
 
@@ -158,48 +133,53 @@ def read_root():
     return {"message": "Hello World"}
 
 
-@app.get("/check_gpu/")
-def check_gpu():
-    gpus = tensorflow.config.list_physical_devices('GPU')
-    return {"gpus": [gpu.name for gpu in gpus] if gpus else "No GPU detected"}
-
-
-@app.post("/predict/")
-async def predict(file: UploadFile = File(...)):
-    # Save the uploaded file to the UPLOAD_DIRECTORY
-    sanitized_filename = sanitize_filename(file.filename)
-    file_path = UPLOAD_DIRECTORY / sanitized_filename
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    
-    features = extract_img_features(file_path, model)
-
-    img_indicess = recommendd(features, features_list)
-    img_indicess = img_indicess.tolist()
-    image_list = get_indices(img_files_list, img_indicess)
-    return {"filename": file.filename, "message": "predicted", 'IDs': image_list}
-
 
 @app.get("/recoomendate/{item_id}")
 def get_recommendate(item_id: int):
     if item_id in data["ITEM_ID"].values:
-        product_row = data.loc[data["ITEM_ID"] == item_id].iloc[0]
-        categorical_prediction = find_categorical_similarity(product_row=product_row)
+        try:
+            product_row = data.loc[data["ITEM_ID"] == item_id].iloc[0]
+        except:
+            return {"status": False, "message":"Item ID not found, please check again!"}
 
-        image_url = product_row['IMAGE_URL_VIEW_1']
-        download_file = download_image(image_url=image_url)
-        if download_file is None and len(categorical_prediction) == 0:
-            return {"status": False, "message":"Invalid image or item ID, please check again!"}
-        features = extract_img_features(download_file, model)
-        img_indicess = recommendd(features, features_list)
+        p_r = product_row
+
+        product_index = data.index[data["ITEM_ID"] == item_id].to_list()[0]
+
+
+        features_list_array = np.array(features_list)
+        features = np.array([features_list_array[product_index]])
+
+        normalized_features_1 = features.reshape(features.shape[0], -1)
+        normalized_features_2 = features_list_array.reshape(features_list_array.shape[0], -1)
+        
+        img_indicess = recommendd(normalized_features_1, normalized_features_2)
         img_indicess = img_indicess.tolist()
         image_list = get_indices(img_files_list, img_indicess)
+        filtered_data = []
+        for ind in img_indicess[0]:
+            filtered_data.append(combined_features[ind])
 
-        # Find common elements in the order of `image_based`
-        common_elements = [item for item in image_list if int(item) in categorical_prediction]
-        common_elements = common_elements[:100]
+        k = 150
+        if len(filtered_data)< 150:
+            k = len(filtered_data)
+        categorical_prediction = find_categorical_similarity(product_row=product_row, filtered_data=filtered_data, k=k)
+        
+        final_indices = []
+        for i in categorical_prediction[0]:
+            final_indices.append(img_indicess[0][i])
+        final_data_ids = data.iloc[final_indices]['ITEM_ID'].tolist()
 
-        return {"status": True, "message":"Predicted successfully.", 'image_based': image_list, 'categorical_based': categorical_prediction, 'array': common_elements}
+        attribute_based = []
+        for i in final_data_ids:
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            PRODUCT_STYLE = p_r['PRODUCT_STYLE']
+            ITEM_TYPE = p_r['ITEM_TYPE']
+            Category_type = p_r['CATEGORY_TYPE']
+            if set(sorted(ITEM_TYPE.split(','))) == set(sorted(product_row["ITEM_TYPE"].split(','))) and set(sorted(Category_type.split(','))) == set(sorted(product_row["CATEGORY_TYPE"].split(','))):
+                attribute_based.append(i)
+
+        return {"status": True, "message":"Predicted successfully.", 'array': attribute_based}
     else:
         return {"status": False, "message":"Item ID not found, please check again!"}
 
