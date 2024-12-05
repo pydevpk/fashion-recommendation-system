@@ -33,7 +33,7 @@ RUN mkdir -p /app/templates && chmod 777 /app/templates
 COPY requirements.txt .
 COPY app.py .
 COPY ./templates /app/templates
-# COPY .env .
+COPY rules.py .
 
 # Create the uploads directory and set permissions
 RUN mkdir -p /app/uploads && chmod 777 /app/uploads
