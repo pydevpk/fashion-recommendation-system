@@ -597,6 +597,18 @@ async def read_item(request: Request, id: int):
         return templates.TemplateResponse(
         request=request, name="item.html", context={"Error": True}
     )
+
+    search_query = {
+            "ITEM_ID": product_row["ITEM_ID"],
+            "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+            "METAL_COLOR": product_row["METAL_COLOR"],
+            "COLOR_STONE": product_row["COLOR_STONE"],
+            "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+            "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+            "ITEM_TYPE": product_row["ITEM_TYPE"],
+            "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+        }
+    
     p_r = product_row
 
     product_index = data.index[data["ITEM_ID"] == id].to_list()[0]
@@ -627,50 +639,41 @@ async def read_item(request: Request, id: int):
     for i in categorical_prediction[0]:
         final_indices.append(img_indicess[0][i])
     final_data_ids = data.iloc[final_indices]['ITEM_ID'].tolist()
-    attribute_based = apply_lj_product_rule(final_data_ids, data, id)
-    attribute_based = apply_silver_platinum_rule(attribute_based, data, id)
-    attribute_based = apply_exact_matching_rule(attribute_based, data, id)
-    attribute_based = distinct_and_sort_by_best_seller(attribute_based, data)
-    attribute_based = inject_related_style_shapes(attribute_based, data, id)
 
-    final_array = aggregate_arrays(attribute_based, attribute_based, attribute_based, attribute_based, attribute_based)
-    print(len(final_array), 'llllllllllllllllllllllllll')
-    common_elements = [item for item in image_list if int(item) in categorical_prediction]
-    common_elements = common_elements[:100]
-
-    search_query = {
-            "ITEM_ID": product_row["ITEM_ID"],
-            "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
-            "METAL_COLOR": product_row["METAL_COLOR"],
-            "COLOR_STONE": product_row["COLOR_STONE"],
-            "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
-            "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
-            "ITEM_TYPE": product_row["ITEM_TYPE"],
-            "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
-        }
-
-    image_based = []
-    for i in image_list:
-        i = int(i)
-        product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
-        query = {
-            "ITEM_ID": product_row["ITEM_ID"],
-            "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
-            "METAL_COLOR": product_row["METAL_COLOR"],
-            "COLOR_STONE": product_row["COLOR_STONE"],
-            "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
-            "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
-            "ITEM_TYPE": product_row["ITEM_TYPE"],
-            "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
-        }
-        image_based.append(query)
     attribute_based = []
-    for i in final_array:
+    for i in final_data_ids:
         product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
         PRODUCT_STYLE = p_r['PRODUCT_STYLE']
         ITEM_TYPE = p_r['ITEM_TYPE']
         Category_type = p_r['CATEGORY_TYPE']
         if set(sorted(ITEM_TYPE.split(','))) == set(sorted(product_row["ITEM_TYPE"].split(','))) and set(sorted(Category_type.split(','))) == set(sorted(product_row["CATEGORY_TYPE"].split(','))):
+            attribute_based.append(i)
+    
+    item_id = id
+    array_0_1 = apply_lj_product_rule(attribute_based, data, item_id)
+    array_0_2 = apply_silver_platinum_rule(attribute_based, data, item_id)
+    array_0 = array_0_1+array_0_2
+
+    final_result = []
+    print('RULES ARRAY ------------------------------------------------')
+    print(len(array_0))
+    print(array_0)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+    
+    print('ARRAY-1 ------------------------------------------------')
+    array_1 = apply_exact_matching_rule(array_0, data, item_id)
+    print('LENGTH: ' ,len(array_1))
+    print("ARRAY: ", array_1)
+    array_1 = distinct_and_sort_by_best_seller(array_1, data)
+    print('LENGTH: ' ,len(array_1))
+    print("ARRAY: ", array_1)
+    if len(array_1) >= 6:
+        injections = inject_related_style_shapes(array_1, data, item_id)
+        array_1 += injections
+        final_result += array_1
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
                 "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
@@ -683,11 +686,750 @@ async def read_item(request: Request, id: int):
             }
             attribute_based.append(query)
 
-    common = []
-    for i in common_elements:
-        i = int(i)
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_1
+    print('LENGTH: ' ,len(array_1))
+    print("ARRAY: ", array_1)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+    
+    print('ARRAY-2 ------------------------------------------------')
+    array_2 = apply_exact_matching_rule(array_0, data, item_id, 0.2, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
+    print('LENGTH: ' ,len(array_2))
+    print("ARRAY: ", array_2)
+    array_2 = distinct_and_sort_by_best_seller(array_2, data)
+    print('LENGTH: ' ,len(array_2))
+    print("ARRAY: ", array_2)
+    if len(array_2) >= 6:
+        injections = inject_related_style_shapes(array_2, data, item_id)
+        array_2 += injections
+        final_result += array_2
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_2
+    print('LENGTH: ' ,len(array_2))
+    print("ARRAY: ", array_2)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-3 ------------------------------------------------')
+    array_3 = apply_exact_matching_rule(array_0, data, item_id, 0.2, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
+    print('LENGTH: ' ,len(array_3))
+    print("ARRAY: ", array_3)
+    array_3 = distinct_and_sort_by_best_seller(array_3, data)
+    print('LENGTH: ' ,len(array_3))
+    print("ARRAY: ", array_3)
+    if len(array_3) >= 6:
+        injections = inject_related_style_shapes(array_3, data, item_id)
+        array_3 += injections
+        final_result += array_3
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_3
+    print('LENGTH: ' ,len(array_3))
+    print("ARRAY: ", array_3)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-4 ------------------------------------------------')
+    array_4 = apply_exact_matching_rule(array_0, data, item_id, 0.2, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
+    print('LENGTH: ' ,len(array_4))
+    print("ARRAY: ", array_4)
+    array_4 = distinct_and_sort_by_best_seller(array_4, data)
+    print('LENGTH: ' ,len(array_4))
+    print("ARRAY: ", array_4)
+    if len(array_4) >= 6:
+        injections = inject_related_style_shapes(array_4, data, item_id)
+        array_4 += injections
+        final_result += array_4
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_4
+    print('LENGTH: ' ,len(array_4))
+    print("ARRAY: ", array_4)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-5 ------------------------------------------------')
+    array_5 = apply_exact_matching_rule(array_0, data, item_id, 0.4)
+    print('LENGTH: ' ,len(array_5))
+    print("ARRAY: ", array_5)
+    array_5 = distinct_and_sort_by_best_seller(array_5, data)
+    print('LENGTH: ' ,len(array_5))
+    print("ARRAY: ", array_5)
+    if len(array_5) >= 6:
+        injections = inject_related_style_shapes(array_5, data, item_id)
+        array_5 += injections
+        final_result += array_5
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_5
+    print('LENGTH: ' ,len(array_5))
+    print("ARRAY: ", array_5)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-6 ------------------------------------------------')
+    array_6 = apply_exact_matching_rule(array_0, data, item_id, 0.4, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
+    print('LENGTH: ' ,len(array_6))
+    print("ARRAY: ", array_6)
+    array_6 = distinct_and_sort_by_best_seller(array_6, data)
+    print('LENGTH: ' ,len(array_6))
+    print("ARRAY: ", array_6)
+    if len(array_6) >= 6:
+        injections = inject_related_style_shapes(array_6, data, item_id)
+        array_6 += injections
+        final_result + array_6
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_6
+    print('LENGTH: ' ,len(array_6))
+    print("ARRAY: ", array_6)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-7 ------------------------------------------------')
+    array_7 = apply_exact_matching_rule(array_0, data, item_id, 0.4, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
+    print('LENGTH: ' ,len(array_7))
+    print("ARRAY: ", array_7)
+    array_7 = distinct_and_sort_by_best_seller(array_7, data)
+    print('LENGTH: ' ,len(array_7))
+    print("ARRAY: ", array_7)
+    if len(array_7) >= 6:
+        injections = inject_related_style_shapes(array_7, data, item_id)
+        array_7 += injections
+        final_result += array_7
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_7
+    print('LENGTH: ' ,len(array_7))
+    print("ARRAY: ", array_7)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-8 ------------------------------------------------')
+    array_8 = apply_exact_matching_rule(array_0, data, item_id, 0.4, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
+    print('LENGTH: ' ,len(array_8))
+    print("ARRAY: ", array_8)
+    array_8 = distinct_and_sort_by_best_seller(array_8, data)
+    print('LENGTH: ' ,len(array_8))
+    print("ARRAY: ", array_8)
+    if len(array_8) >= 6:
+        injections = inject_related_style_shapes(array_8, data, item_id)
+        array_8 += injections
+        final_result += array_8
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_8
+    print('LENGTH: ' ,len(array_8))
+    print("ARRAY: ", array_8)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-9 ------------------------------------------------')
+    array_9 = apply_exact_matching_rule(array_0, data, item_id, 0.6)
+    print('LENGTH: ' ,len(array_9))
+    print("ARRAY: ", array_9)
+    array_9 = distinct_and_sort_by_best_seller(array_9, data)
+    print('LENGTH: ' ,len(array_9))
+    print("ARRAY: ", array_9)
+    if len(array_9) >= 6:
+        injections = inject_related_style_shapes(array_9, data, item_id)
+        array_9 += injections
+        final_result += array_9
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_9
+    print('LENGTH: ' ,len(array_9))
+    print("ARRAY: ", array_9)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-10 ------------------------------------------------')
+    array_10 = apply_exact_matching_rule(array_0, data, item_id, 0.6, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
+    print('LENGTH: ' ,len(array_10))
+    print("ARRAY: ", array_10)
+    array_10 = distinct_and_sort_by_best_seller(array_10, data)
+    print('LENGTH: ' ,len(array_10))
+    print("ARRAY: ", array_10)
+    if len(array_10) >= 6:
+        injections = inject_related_style_shapes(array_10, data, item_id)
+        array_10 += injections
+        final_result += array_10
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_10
+    print('LENGTH: ' ,len(array_10))
+    print("ARRAY: ", array_10)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-11 ------------------------------------------------')
+    array_11 = apply_exact_matching_rule(array_0, data, item_id, 0.6, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
+    print('LENGTH: ' ,len(array_11))
+    print("ARRAY: ", array_11)
+    array_11 = distinct_and_sort_by_best_seller(array_11, data)
+    print('LENGTH: ' ,len(array_11))
+    print("ARRAY: ", array_11)
+    if len(array_11) >= 6:
+        injections = inject_related_style_shapes(array_11, data, item_id)
+        array_11 += injections
+        final_result += array_11
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_11
+    print('LENGTH: ' ,len(array_11))
+    print("ARRAY: ", array_11)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-12 ------------------------------------------------')
+    array_12 = apply_exact_matching_rule(array_0, data, item_id, 0.6, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
+    print('LENGTH: ' ,len(array_12))
+    print("ARRAY: ", array_12)
+    array_12 = distinct_and_sort_by_best_seller(array_12, data)
+    print('LENGTH: ' ,len(array_12))
+    print("ARRAY: ", array_12)
+    if len(array_12) >= 6:
+        injections = inject_related_style_shapes(array_12, data, item_id)
+        array_12 += injections
+        final_result += array_12
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_12
+    print('LENGTH: ' ,len(array_12))
+    print("ARRAY: ", array_12)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-13 ------------------------------------------------')
+    array_13 = apply_exact_matching_rule(array_0, data, item_id, 1)
+    print('LENGTH: ' ,len(array_13))
+    print("ARRAY: ", array_13)
+    array_13 = distinct_and_sort_by_best_seller(array_13, data)
+    print('LENGTH: ' ,len(array_13))
+    print("ARRAY: ", array_13)
+    if len(array_13) >= 6:
+        injections = inject_related_style_shapes(array_13, data, item_id)
+        array_13 += injections
+        final_result += array_13
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_13
+    print('LENGTH: ' ,len(array_13))
+    print("ARRAY: ", array_13)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-14 ------------------------------------------------')
+    array_14 = apply_exact_matching_rule(array_0, data, item_id, 1, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
+    print('LENGTH: ' ,len(array_14))
+    print("ARRAY: ", array_14)
+    array_14 = distinct_and_sort_by_best_seller(array_14, data)
+    print('LENGTH: ' ,len(array_14))
+    print("ARRAY: ", array_14)
+    if len(array_14) >= 6:
+        injections = inject_related_style_shapes(array_14, data, item_id)
+        array_14 += injections
+        final_result += array_14
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_14
+    print('LENGTH: ' ,len(array_14))
+    print("ARRAY: ", array_14)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-15 ------------------------------------------------')
+    array_15 = apply_exact_matching_rule(array_0, data, item_id, 1, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
+    print('LENGTH: ' ,len(array_15))
+    print("ARRAY: ", array_15)
+    array_15 = distinct_and_sort_by_best_seller(array_15, data)
+    print('LENGTH: ' ,len(array_15))
+    print("ARRAY: ", array_15)
+    if len(array_15) >= 6:
+        injections = inject_related_style_shapes(array_15, data, item_id)
+        array_15 += injections
+        final_result += array_15
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_15
+    print('LENGTH: ' ,len(array_15))
+    print("ARRAY: ", array_15)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-16 ------------------------------------------------')
+    array_16 = apply_exact_matching_rule(array_0, data, item_id, 1, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
+    print('LENGTH: ' ,len(array_16))
+    print("ARRAY: ", array_16)
+    array_16 = distinct_and_sort_by_best_seller(array_16, data)
+    print('LENGTH: ' ,len(array_16))
+    print("ARRAY: ", array_16)
+    if len(array_16) >= 6:
+        injections = inject_related_style_shapes(array_16, data, item_id)
+        array_16 += injections
+        final_result += array_16
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_16
+    print('LENGTH: ' ,len(array_16))
+    print("ARRAY: ", array_16)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-17 ------------------------------------------------')
+    array_17 = apply_exact_matching_rule(array_0, data, item_id, 0)
+    print('LENGTH: ' ,len(array_17))
+    print("ARRAY: ", array_17)
+    array_17 = distinct_and_sort_by_best_seller(array_17, data)
+    print('LENGTH: ' ,len(array_17))
+    print("ARRAY: ", array_17)
+    if len(array_17) >= 6:
+        injections = inject_related_style_shapes(array_17, data, item_id)
+        array_17 += injections
+        final_result += array_17
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_17
+    print('LENGTH: ' ,len(array_17))
+    print("ARRAY: ", array_17)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-18 ------------------------------------------------')
+    array_18 = apply_exact_matching_rule(array_0, data, item_id, 0, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
+    print('LENGTH: ' ,len(array_18))
+    print("ARRAY: ", array_18)
+    array_18 = distinct_and_sort_by_best_seller(array_18, data)
+    print('LENGTH: ' ,len(array_18))
+    print("ARRAY: ", array_18)
+    if len(array_18) >= 6:
+        injections = inject_related_style_shapes(array_18, data, item_id)
+        array_18 += injections
+        final_result += array_18
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_18
+    print('LENGTH: ' ,len(array_18))
+    print("ARRAY: ", array_18)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-19 ------------------------------------------------')
+    array_19 = apply_exact_matching_rule(array_0, data, item_id, 0, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
+    print('LENGTH: ' ,len(array_19))
+    print("ARRAY: ", array_19)
+    array_19 = distinct_and_sort_by_best_seller(array_19, data)
+    print('LENGTH: ' ,len(array_19))
+    print("ARRAY: ", array_19)
+    if len(array_19) >= 6:
+        injections = inject_related_style_shapes(array_19, data, item_id)
+        array_19 += injections
+        final_result += array_19
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_19
+    print('LENGTH: ' ,len(array_19))
+    print("ARRAY: ", array_19)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-20 ------------------------------------------------')
+    array_20 = apply_exact_matching_rule(array_0, data, item_id, 0, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
+    print('LENGTH: ' ,len(array_20))
+    print("ARRAY: ", array_20)
+    array_20 = distinct_and_sort_by_best_seller(array_20, data)
+    print('LENGTH: ' ,len(array_20))
+    print("ARRAY: ", array_20)
+    if len(array_20) >= 6:
+        injections = inject_related_style_shapes(array_20, data, item_id)
+        array_20 += injections
+        final_result += array_20
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_20
+    print('LENGTH: ' ,len(array_20))
+    print("ARRAY: ", array_20)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-21 ------------------------------------------------')
+    array_21_1 = apply_lj_product_rule_df(data, item_id)
+    array_21_2 = apply_silver_platinum_rule_df(data, item_id)
+    array_21_ = list(set(array_21_1+array_21_2))
+    array_21 = get_similar_name_styles(array_21_, data, item_id)
+    print('LENGTH: ' ,len(array_21))
+    print("ARRAY: ", array_21)
+    array_21 = distinct_and_sort_by_best_seller(array_21, data)
+    print('LENGTH: ' ,len(array_21))
+    print("ARRAY: ", array_21)
+    if len(array_21) >= 6:
+        injections = inject_related_style_shapes(array_21, data, item_id)
+        array_21 += injections
+        final_result += array_21
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_21
+    print('LENGTH: ' ,len(array_21))
+    print("ARRAY: ", array_21)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ARRAY-22 ------------------------------------------------')
+    array_22_1 = apply_lj_product_rule_df(data, item_id)
+    array_22_2 = apply_silver_platinum_rule_df(data, item_id)
+    array_22_ = list(set(array_22_1+array_22_2))
+    print(len(array_22_), '---------------------------')
+    array_22 = get_similar_category_style(array_22_, data, item_id)
+    print('LENGTH: ' ,len(array_22))
+    print("ARRAY: ", array_22)
+    array_22 = distinct_and_sort_by_best_seller(array_22, data)
+    print('LENGTH: ' ,len(array_22))
+    print("ARRAY: ", array_22)
+    if len(array_22) >= 6:
+        injections = inject_related_style_shapes(array_22, data, item_id)
+        print(len(injections), 'jjjjjjjjjjjjjjjjjjjjjjjj')
+        array_22 += injections
+        final_result += array_22
+        attribute_based = []
+        for i in aggregate_arrays(final_result):
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
+    final_result += array_22
+    print('LENGTH: ' ,len(array_22))
+    print("ARRAY: ", array_22)
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    print('ffffffffffffffffffffffffffffffffffffff')
+    print('LENGTH: ' ,len(final_result))
+    print("ARRAY: ", final_result)
+
+    final_array = aggregate_arrays(final_result)
+    print('ffffffffffffffffffffffffffffffffffffff')
+    print('LENGTH: ' ,len(final_array))
+    print("ARRAY: ", final_array)
+
+    
+
+    attribute_based = []
+    for i in final_array:
         product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
-        # if set(PRODUCT_STYLE.split(',')) == set(product_row["PRODUCT_STYLE"].split(',')) and set(ITEM_TYPE.split(',')) == set(product_row["ITEM_TYPE"].split(',')):
         query = {
             "ITEM_ID": product_row["ITEM_ID"],
             "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
@@ -698,9 +1440,10 @@ async def read_item(request: Request, id: int):
             "ITEM_TYPE": product_row["ITEM_TYPE"],
             "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
         }
-        common.append(query)
+        attribute_based.append(query)
+
     return templates.TemplateResponse(
-        request=request, name="item.html", context={"image_based": image_based, "attribute_based":final_array, "common":common, "search_query":search_query}
+        request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
     )
 
 
