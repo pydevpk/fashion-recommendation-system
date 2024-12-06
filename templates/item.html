@@ -31,29 +31,15 @@
               </div>
           </div>
           <div class="row">
-            <div class="col-4 text-center">
-              <h1>Image based</h1>
-              {% for image in image_based %}
-              <img src="{{image.IMAGE_URL_VIEW_1}}">
-              <div>
-                <ul class="list-group text-start">
-                    <li class="list-group-item">ITEM_ID: {{image.ITEM_ID}}</li>
-                    <li class="list-group-item">METAL_KARAT_DISPLAY: {{image.METAL_KARAT_DISPLAY}}</li>
-                    <li class="list-group-item">METAL_COLOR: {{image.METAL_COLOR}}</li>
-                    <li class="list-group-item">COLOR_STONE: {{image.COLOR_STONE}}</li>
-                    <li class="list-group-item">CATEGORY_TYPE: {{image.CATEGORY_TYPE}}</li>
-                    <li class="list-group-item">PRODUCT_STYLE: {{image.PRODUCT_STYLE}}</li>
-                    <li class="list-group-item">ITEM_TYPE: {{image.ITEM_TYPE}}</li>
-                </ul>
-              </div>
-              {% endfor %}
-            </div>
-            <div class="col-4 text-center">
+            <div class="col-12 text-center">
               <h1>Attribute based</h1>
               {% for image in attribute_based %}
-              <img src="{{image.IMAGE_URL_VIEW_1}}">
-              <div>
-                <ul class="list-group text-start">
+              <div class="row mb-3">
+                <div class="col-6">
+                  <img src="{{image.IMAGE_URL_VIEW_1}}">
+                </div>
+                <div class="col-6">
+                  <ul class="list-group text-start">
                     <li class="list-group-item">ITEM_ID: {{image.ITEM_ID}}</li>
                     <li class="list-group-item">METAL_KARAT_DISPLAY: {{image.METAL_KARAT_DISPLAY}}</li>
                     <li class="list-group-item">METAL_COLOR: {{image.METAL_COLOR}}</li>
@@ -61,24 +47,9 @@
                     <li class="list-group-item">CATEGORY_TYPE: {{image.CATEGORY_TYPE}}</li>
                     <li class="list-group-item">PRODUCT_STYLE: {{image.PRODUCT_STYLE}}</li>
                     <li class="list-group-item">ITEM_TYPE: {{image.ITEM_TYPE}}</li>
+                    <li class="list-group-item">C_LEVEL_PRICE: {{image.C_LEVEL_PRICE}}</li>
                 </ul>
-              </div>
-              {% endfor %}
-            </div>
-            <div class="col-4 text-center">
-              <h1>Common</h1>
-              {% for image in common %}
-              <img src="{{image.IMAGE_URL_VIEW_1}}">
-              <div>
-                <ul class="list-group text-start">
-                    <li class="list-group-item">ITEM_ID: {{image.ITEM_ID}}</li>
-                    <li class="list-group-item">METAL_KARAT_DISPLAY: {{image.METAL_KARAT_DISPLAY}}</li>
-                    <li class="list-group-item">METAL_COLOR: {{image.METAL_COLOR}}</li>
-                    <li class="list-group-item">COLOR_STONE: {{image.COLOR_STONE}}</li>
-                    <li class="list-group-item">CATEGORY_TYPE: {{image.CATEGORY_TYPE}}</li>
-                    <li class="list-group-item">PRODUCT_STYLE: {{image.PRODUCT_STYLE}}</li>
-                    <li class="list-group-item">ITEM_TYPE: {{image.ITEM_TYPE}}</li>
-                </ul>
+                </div>
               </div>
               {% endfor %}
             </div>

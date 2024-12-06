@@ -106,7 +106,7 @@ def get_similar_name_styles(attribute_based, data, base_item_id):
     return related_shapes[:20]
 
 # Final Aggregation Combine arrays as per the specified steps:
-def aggregate_arrays(*arrays):
+def aggregate_arrays(item_id, *arrays):
     aggregated = []
     seen = set()
     for array in arrays:
@@ -114,5 +114,8 @@ def aggregate_arrays(*arrays):
             if item not in seen:
                 aggregated.append(item)
                 seen.add(item)
+    try:
+        aggregated.remove(item_id)
+    except:pass
     return aggregated
 

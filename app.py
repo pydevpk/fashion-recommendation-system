@@ -606,7 +606,8 @@ async def read_item(request: Request, id: int):
             "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
             "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
             "ITEM_TYPE": product_row["ITEM_TYPE"],
-            "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+            "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
         }
     
     p_r = product_row
@@ -671,8 +672,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_1, data, item_id)
         array_1 += injections
         final_result += array_1
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -682,7 +686,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -705,8 +710,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_2, data, item_id)
         array_2 += injections
         final_result += array_2
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -716,7 +724,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -739,8 +748,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_3, data, item_id)
         array_3 += injections
         final_result += array_3
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -750,7 +762,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -773,8 +786,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_4, data, item_id)
         array_4 += injections
         final_result += array_4
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -784,7 +800,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -807,8 +824,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_5, data, item_id)
         array_5 += injections
         final_result += array_5
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -818,7 +838,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -841,8 +862,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_6, data, item_id)
         array_6 += injections
         final_result + array_6
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -852,7 +876,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -875,8 +900,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_7, data, item_id)
         array_7 += injections
         final_result += array_7
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -886,7 +914,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -909,8 +938,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_8, data, item_id)
         array_8 += injections
         final_result += array_8
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -920,7 +952,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -943,8 +976,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_9, data, item_id)
         array_9 += injections
         final_result += array_9
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -954,7 +990,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -977,8 +1014,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_10, data, item_id)
         array_10 += injections
         final_result += array_10
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -988,7 +1028,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -1011,8 +1052,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_11, data, item_id)
         array_11 += injections
         final_result += array_11
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1022,7 +1066,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -1045,8 +1090,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_12, data, item_id)
         array_12 += injections
         final_result += array_12
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1056,7 +1104,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -1079,8 +1128,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_13, data, item_id)
         array_13 += injections
         final_result += array_13
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1090,7 +1142,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -1113,8 +1166,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_14, data, item_id)
         array_14 += injections
         final_result += array_14
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1124,7 +1180,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -1147,8 +1204,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_15, data, item_id)
         array_15 += injections
         final_result += array_15
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1158,7 +1218,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -1181,8 +1242,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_16, data, item_id)
         array_16 += injections
         final_result += array_16
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1192,7 +1256,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -1215,8 +1280,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_17, data, item_id)
         array_17 += injections
         final_result += array_17
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1226,7 +1294,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -1249,8 +1318,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_18, data, item_id)
         array_18 += injections
         final_result += array_18
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1260,7 +1332,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -1283,8 +1356,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_19, data, item_id)
         array_19 += injections
         final_result += array_19
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1294,7 +1370,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -1317,8 +1394,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_20, data, item_id)
         array_20 += injections
         final_result += array_20
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1328,7 +1408,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -1354,8 +1435,11 @@ async def read_item(request: Request, id: int):
         injections = inject_related_style_shapes(array_21, data, item_id)
         array_21 += injections
         final_result += array_21
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1365,7 +1449,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -1393,8 +1478,11 @@ async def read_item(request: Request, id: int):
         print(len(injections), 'jjjjjjjjjjjjjjjjjjjjjjjj')
         array_22 += injections
         final_result += array_22
+        try:
+            final_result.remove(item_id)
+        except:pass
         attribute_based = []
-        for i in aggregate_arrays(final_result):
+        for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1404,7 +1492,8 @@ async def read_item(request: Request, id: int):
                 "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
-                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
             }
             attribute_based.append(query)
 
@@ -1412,6 +1501,9 @@ async def read_item(request: Request, id: int):
             request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
         )
     final_result += array_22
+    try:
+        final_result.remove(item_id)
+    except:pass
     print('LENGTH: ' ,len(array_22))
     print("ARRAY: ", array_22)
     print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
@@ -1420,7 +1512,7 @@ async def read_item(request: Request, id: int):
     print('LENGTH: ' ,len(final_result))
     print("ARRAY: ", final_result)
 
-    final_array = aggregate_arrays(final_result)
+    final_array = aggregate_arrays(item_id, final_result)
     print('ffffffffffffffffffffffffffffffffffffff')
     print('LENGTH: ' ,len(final_array))
     print("ARRAY: ", final_array)
@@ -1438,7 +1530,8 @@ async def read_item(request: Request, id: int):
             "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
             "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
             "ITEM_TYPE": product_row["ITEM_TYPE"],
-            "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"]
+            "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+            "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
         }
         attribute_based.append(query)
 
