@@ -33,6 +33,8 @@ img_files_list = pickle.load(open("products.pkl", "rb"))
 UPLOAD_DIRECTORY = Path("uploads")
 UPLOAD_DIRECTORY.mkdir(parents=True, exist_ok=True)
 
+CACHED_RESULT = {}
+
 
 def sanitize_filename() -> str:
     return f"image_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
@@ -591,6 +593,8 @@ def get_recommendate(item_id: int):
 
 @app.get("/items/{id}", response_class=HTMLResponse)
 async def read_item(request: Request, id: int):
+    global CACHED_RESULT
+    # print(CACHED_RESULT, 'dddddddddddddddddddddddd')
     try:
         product_row = data.loc[data["ITEM_ID"] == id].iloc[0]
     except:
@@ -609,6 +613,27 @@ async def read_item(request: Request, id: int):
             "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
             "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
         }
+    
+    if id in CACHED_RESULT:
+        attribute_based = []
+        for i in CACHED_RESULT[id]:
+            product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
+            query = {
+                "ITEM_ID": product_row["ITEM_ID"],
+                "METAL_KARAT_DISPLAY": product_row["METAL_KARAT_DISPLAY"],
+                "METAL_COLOR": product_row["METAL_COLOR"],
+                "COLOR_STONE": product_row["COLOR_STONE"],
+                "CATEGORY_TYPE": product_row["CATEGORY_TYPE"],
+                "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
+                "ITEM_TYPE": product_row["ITEM_TYPE"],
+                "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+            }
+            attribute_based.append(query)
+
+        return templates.TemplateResponse(
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        )
     
     p_r = product_row
 
@@ -675,6 +700,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -713,6 +739,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -751,6 +778,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -789,6 +817,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -827,6 +856,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -865,6 +895,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -903,6 +934,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -941,6 +973,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -979,6 +1012,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1017,6 +1051,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1055,6 +1090,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1093,6 +1129,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1131,6 +1168,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1169,6 +1207,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1207,6 +1246,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1245,6 +1285,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1283,6 +1324,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1321,6 +1363,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1359,6 +1402,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1397,6 +1441,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1438,6 +1483,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1481,6 +1527,7 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
         attribute_based = []
         for i in aggregate_arrays(item_id, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1504,6 +1551,7 @@ async def read_item(request: Request, id: int):
     try:
         final_result.remove(item_id)
     except:pass
+    CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
     print('LENGTH: ' ,len(array_22))
     print("ARRAY: ", array_22)
     print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
