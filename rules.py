@@ -48,7 +48,7 @@ def get_similar_category_style(arr, data, base_item_id):
 
 
 # Exact Matching Rule (±20% Price, Metal Color, Metal KT, etc.)
-def apply_exact_matching_rule(attribute_based, data, base_item_id, price_tolerance=0.2, base_properties=["METAL_COLOR", "METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"]):
+def apply_exact_matching_rule(attribute_based, data, base_item_id, price_tolerance=0.2, base_properties=["METAL_COLOR", "METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="both"):
     base_price = data.loc[data["ITEM_ID"] == base_item_id, "C_LEVEL_PRICE"].values[0]
     base_attributes = data.loc[data["ITEM_ID"] == base_item_id, base_properties].values[0]
     
@@ -69,7 +69,10 @@ def apply_exact_matching_rule(attribute_based, data, base_item_id, price_toleran
             f_item_attributes += list(set(sorted(i)))
         item_attributes = f_item_attributes
 
-        price_match = base_price * (1 - price_tolerance) <= item_price <= base_price * (1 + price_tolerance)
+        if action == "positive":
+            price_match = base_price <= item_price <= base_price * (1 + price_tolerance)
+        else:
+            price_match = base_price * (1 - price_tolerance) <= item_price <= base_price * (1 + price_tolerance)
         if price_tolerance > 0:
             return price_match and all(base_attr == item_attr for base_attr, item_attr in zip(base_attributes, item_attributes))
         return all(base_attr == item_attr for base_attr, item_attr in zip(base_attributes, item_attributes))
