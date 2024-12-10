@@ -99,8 +99,14 @@ def inject_related_style_shapes(attribute_based, data, base_item_id):
     base_style = data.loc[data["ITEM_ID"] == base_item_id, "RELATED_STYLE_SHAPES"].values[0]
     if base_style == "NO INFO":
         return []
-    related_shapes = data[data["RELATED_STYLE_SHAPES"] == base_style].sort_values("BestSeller_DisplayOrder")["ITEM_ID"].tolist()
-    return related_shapes
+    
+    final_result = []
+    base_style_l = base_style.split(',')
+    base_style_l = [base_style.strip() for base_style in base_style_l]
+    for base_style_i in base_style_l:
+        related_shapes = data[data["ITEM_CD"] == base_style_i].sort_values("BestSeller_DisplayOrder")["ITEM_ID"].tolist()
+        final_result += related_shapes
+    return final_result
 
 
 def get_similar_name_styles(attribute_based, data, base_item_id):
