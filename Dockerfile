@@ -34,6 +34,7 @@ COPY requirements.txt .
 COPY app.py .
 COPY ./templates /app/templates
 COPY rules.py .
+COPY db.py .
 
 # Create the uploads directory and set permissions
 RUN mkdir -p /app/uploads && chmod 777 /app/uploads
