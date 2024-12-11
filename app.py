@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -5,6 +6,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi import UploadFile
 from fastapi import File
 from fastapi import Response
+from pydantic import BaseModel
 
 import pandas as pd
 import pickle
@@ -16,6 +18,7 @@ import joblib
 from pathlib import Path
 from datetime import datetime
 from rules import apply_lj_product_rule, apply_silver_platinum_rule, apply_exact_matching_rule, distinct_and_sort_by_best_seller, inject_related_style_shapes, aggregate_arrays, get_similar_name_styles, apply_lj_product_rule_df, apply_silver_platinum_rule_df, get_similar_category_style
+from db import get_item, put_item
 
 app = FastAPI()
 
@@ -36,35 +39,15 @@ UPLOAD_DIRECTORY.mkdir(parents=True, exist_ok=True)
 CACHED_RESULT = {}
 
 
-def sanitize_filename() -> str:
-    return f"image_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+class Remove(BaseModel):
+    item_id: str
+    remove: list
 
-"""
-def download_image(image_url, save_directory="uploads"):
-    try:
-        # Make a GET request to fetch the image
-        response = requests.get(image_url, stream=True)
-        response.raise_for_status()  # Raise an error for bad status codes (e.g., 404)
 
-        # Create the directory if it doesn't exist
-        os.makedirs(save_directory, exist_ok=True)
+class Addon(BaseModel):
+    item_id: str
+    addons: list
 
-        # Use the provided filename or extract it from the URL
-        filename = sanitize_filename()
-        
-        save_path = os.path.join(save_directory, filename)
-
-        # Write the image to the file
-        with open(save_path, "wb") as file:
-            for chunk in response.iter_content(1024):
-                file.write(chunk)
-
-        print(f"Image saved to {save_path}")
-        return save_path
-    except Exception as e:
-        print(f"Failed to download image: {e}")
-        return None
-"""
 
 def normalize_query(query):
     # Normalize and encode query
@@ -93,30 +76,14 @@ def find_categorical_similarity(product_row, filtered_data, k):
     neighbors = NearestNeighbors(n_neighbors=k, algorithm='brute', metric='euclidean')
     neighbors.fit(filtered_data)
     distence, indices = neighbors.kneighbors(query_combined_features)
-    # recommended_item_ids = data.iloc[indices[0]]['ITEM_ID'].tolist()
     return indices
 
 
-"""
-def extract_img_features(img_path, model):
-    img = image.load_img(img_path, target_size=(224, 224))
-    img_array = image.img_to_array(img)
-    expand_img = np.expand_dims(img_array, axis=0)
-    preprocessed_img = preprocess_input(expand_img)
-    result_to_resnet = model.predict(preprocessed_img)
-    flatten_result = result_to_resnet.flatten()
-    # normalizing
-    result_normlized = flatten_result / norm(flatten_result)
-
-    return result_normlized
-"""
 
 def recommendd(features, features_list):
     neighbors = NearestNeighbors(n_neighbors=50, algorithm='brute', metric='euclidean')
     neighbors.fit(features_list)
-
     distence, indices = neighbors.kneighbors(features)
-
     return indices
     
 
@@ -132,8 +99,21 @@ def get_indices(lst, targets):
 
 
 @app.get("/")
-def read_root():
+async def read_root():
     return {"message": "Hello World"}
+
+
+@app.get("/feedback-detail/{item_id}")
+async def feedback_detail(item_id: int):
+    return {
+        "status": True,
+        "message":f"Feedback for item ID: {item_id}",
+        "data": get_item(item_id)
+    }
+
+
+# @app.post("/create-update-feedback")
+# async def create_update_feedback()
 
 
 
@@ -209,7 +189,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_1, data, item_id)
             array_1 += injections
             final_result += array_1
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_1
         print('LENGTH: ' ,len(array_1))
@@ -229,7 +209,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_2, data, item_id)
             array_2 += injections
             final_result += array_2
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_2
         print('LENGTH: ' ,len(array_2))
@@ -249,7 +229,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_3, data, item_id)
             array_3 += injections
             final_result += array_3
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_3
         print('LENGTH: ' ,len(array_3))
@@ -269,7 +249,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_4, data, item_id)
             array_4 += injections
             final_result += array_4
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_4
         print('LENGTH: ' ,len(array_4))
@@ -289,7 +269,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_5, data, item_id)
             array_5 += injections
             final_result += array_5
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_5
         print('LENGTH: ' ,len(array_5))
@@ -309,7 +289,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_6, data, item_id)
             array_6 += injections
             final_result + array_6
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_6
         print('LENGTH: ' ,len(array_6))
@@ -329,7 +309,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_7, data, item_id)
             array_7 += injections
             final_result += array_7
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_7
         print('LENGTH: ' ,len(array_7))
@@ -349,7 +329,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_8, data, item_id)
             array_8 += injections
             final_result += array_8
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_8
         print('LENGTH: ' ,len(array_8))
@@ -369,7 +349,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_9, data, item_id)
             array_9 += injections
             final_result += array_9
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_9
         print('LENGTH: ' ,len(array_9))
@@ -389,7 +369,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_10, data, item_id)
             array_10 += injections
             final_result += array_10
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_10
         print('LENGTH: ' ,len(array_10))
@@ -409,7 +389,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_11, data, item_id)
             array_11 += injections
             final_result += array_11
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_11
         print('LENGTH: ' ,len(array_11))
@@ -429,7 +409,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_12, data, item_id)
             array_12 += injections
             final_result += array_12
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_12
         print('LENGTH: ' ,len(array_12))
@@ -449,7 +429,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_13, data, item_id)
             array_13 += injections
             final_result += array_13
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_13
         print('LENGTH: ' ,len(array_13))
@@ -469,7 +449,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_14, data, item_id)
             array_14 += injections
             final_result += array_14
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_14
         print('LENGTH: ' ,len(array_14))
@@ -489,7 +469,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_15, data, item_id)
             array_15 += injections
             final_result += array_15
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_15
         print('LENGTH: ' ,len(array_15))
@@ -509,7 +489,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_16, data, item_id)
             array_16 += injections
             final_result += array_16
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_16
         print('LENGTH: ' ,len(array_16))
@@ -527,7 +507,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_17, data, item_id)
             array_17 += injections
             final_result += array_17
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_17
         print('LENGTH: ' ,len(array_17))
@@ -545,7 +525,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_18, data, item_id)
             array_18 += injections
             final_result += array_18
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_18
         print('LENGTH: ' ,len(array_18))
@@ -563,7 +543,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_19, data, item_id)
             array_19 += injections
             final_result += array_19
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_19
         print('LENGTH: ' ,len(array_19))
@@ -581,7 +561,7 @@ def get_recommendate(item_id: int):
             injections = inject_related_style_shapes(array_20, data, item_id)
             array_20 += injections
             final_result += array_20
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_20
         print('LENGTH: ' ,len(array_20))
@@ -605,7 +585,7 @@ def get_recommendate(item_id: int):
         if len(array_21) >= 6:
             # array_21 += injections
             final_result += array_21
-            CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+            CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_21
         print('LENGTH: ' ,len(array_21))
@@ -628,7 +608,7 @@ def get_recommendate(item_id: int):
         #     print(len(injections), 'jjjjjjjjjjjjjjjjjjjjjjjj')
         #     array_22 += injections
         #     final_result += array_22
-        #     CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        #     CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         #     return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_22
         print('LENGTH: ' ,len(array_22))
@@ -642,7 +622,7 @@ def get_recommendate(item_id: int):
         # attribute_based = inject_related_style_shapes(attribute_based, data, item_id)
 
         # final_array = aggregate_arrays(final_result)
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         print('ffffffffffffffffffffffffffffffffffffff')
         print('LENGTH: ' ,len(CACHED_RESULT[item_id]))
         print("ARRAY: ", CACHED_RESULT[item_id])
@@ -769,9 +749,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -814,9 +794,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -857,9 +837,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -900,9 +880,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -943,9 +923,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -986,9 +966,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1029,9 +1009,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1072,9 +1052,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1115,9 +1095,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1158,9 +1138,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1201,9 +1181,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1244,9 +1224,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1287,9 +1267,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1330,9 +1310,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1373,9 +1353,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1416,9 +1396,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1459,9 +1439,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1500,9 +1480,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1541,9 +1521,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1582,9 +1562,9 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1627,12 +1607,13 @@ async def read_item(request: Request, id: int):
         print("ARRAY injections: ", injections)
         # array_21 += injections
         final_result += array_21
+        # print(final_result, 'fffffffffffffffffffffff')
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+        CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
         attribute_based = []
-        for i in aggregate_arrays(item_id, final_result):
+        for i in aggregate_arrays(item_id, data, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1675,9 +1656,9 @@ async def read_item(request: Request, id: int):
     #     try:
     #         final_result.remove(item_id)
     #     except:pass
-    #     CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+    #     CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
     #     attribute_based = []
-    #     for i in aggregate_arrays(item_id, final_result):
+    #     for i in aggregate_arrays(item_id, data, final_result):
     #         product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
     #         query = {
     #             "ITEM_ID": product_row["ITEM_ID"],
@@ -1699,7 +1680,7 @@ async def read_item(request: Request, id: int):
     try:
         final_result.remove(item_id)
     except:pass
-    CACHED_RESULT[item_id] = aggregate_arrays(item_id, final_result)
+    CACHED_RESULT[item_id] = aggregate_arrays(item_id, data, final_result)
     print('LENGTH: ' ,len(array_22))
     print("ARRAY: ", array_22)
     print("\n\n\n\n\n\n\n\n\n\n\n\n\n")
@@ -1708,7 +1689,7 @@ async def read_item(request: Request, id: int):
     print('LENGTH: ' ,len(final_result))
     print("ARRAY: ", final_result)
 
-    final_array = aggregate_arrays(item_id, final_result)
+    final_array = aggregate_arrays(item_id, data, final_result)
     print('ffffffffffffffffffffffffffffffffffffff')
     print('LENGTH: ' ,len(final_array))
     print("ARRAY: ", final_array)

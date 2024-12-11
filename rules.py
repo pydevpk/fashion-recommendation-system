@@ -88,10 +88,8 @@ def distinct_and_sort_by_best_seller(attribute_based, data, item_id):
         style = data.loc[data["ITEM_ID"] == item, "UNIQUE_ITEM_CD"].values[0]
         if style not in unique_styles or data.loc[data["ITEM_ID"] == item, "BestSeller_DisplayOrder"].values[0] < data.loc[data["ITEM_ID"] == unique_styles[style], "BestSeller_DisplayOrder"].values[0]:
             unique_styles[style] = item
-    # print(unique_styles, '111111111111111111111111111')
     if bese in unique_styles:
         unique_styles.pop(bese)
-    # print(unique_styles, '22222222222222222222222222')
     # Sort by BestSeller_DisplayOrder
     sorted_items = sorted(unique_styles.values(), key=lambda x: data.loc[data["ITEM_ID"] == x, "BestSeller_DisplayOrder"].values[0])
     return sorted_items
@@ -117,8 +115,20 @@ def get_similar_name_styles(attribute_based, data, base_item_id):
     related_shapes = data[(data["ITEM_NAME"] == base_style_name) & (data["ITEM_ID"].isin(attribute_based))]["ITEM_ID"].tolist()
     return related_shapes[:20]
 
+
+def remove_base_uid(array, base_item_id, data):
+    print()
+    unique = set()
+    result = []
+    for item in array:
+        style = data.loc[data["ITEM_ID"] == item, "UNIQUE_ITEM_CD"].values[0]
+        if style not in unique:
+            result.append(item)
+            unique.add(style)
+    return result
+
 # Final Aggregation Combine arrays as per the specified steps:
-def aggregate_arrays(item_id, *arrays):
+def aggregate_arrays(item_id, data, *arrays):
     aggregated = []
     seen = set()
     for array in arrays:
@@ -129,5 +139,5 @@ def aggregate_arrays(item_id, *arrays):
     try:
         aggregated.remove(item_id)
     except:pass
-    return aggregated
+    return remove_base_uid(aggregated, item_id, data)
 

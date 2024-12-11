@@ -1,8 +1,9 @@
 import boto3
+from typing import Any
 
 dynamodb = boto3.resource('dynamodb')
 
-table = dynamodb.Table('restriction')
+table = dynamodb.Table('feedback_for_styles')
 
 def dynamo_to_python(dynamo_object: dict) -> dict:
     deserializer = TypeDeserializer()
@@ -19,33 +20,28 @@ def python_to_dynamo(python_object: dict) -> dict:
     }
 
 
-def get_item(item_id: int):
-    response = table.get_item(Key={"pk": item_id})
+def get_item(item_id: str):
+    response = table.get_item(Key={"pk": str(item_id)})
     if 'Item' in response:
-        print("Retrieved item:", response['Item'])
+        return response['Item']
     return None
 
 
-def put_item(item_id: int, restictions: str, allowed: str):
-    allowed = allowed.split(',')
-    restictions = restictions.split(',')
-    item = get_item(item_id)
-    f_restictions = list(set(list(restictions+item['restictions'])))
-    f_allowed = list(set(list(allowed+item['allowed'])))
-    s_restictions = ",".join(f_restictions)
-    s_allowed = ",".join(f_allowed)
-    if item:
-        table.update_item(
-            Key={'pk': item_id},
-            UpdateExpression="SET restictions = :s_restictions, allowed = :s_allowed",
-            ExpressionAttributeValues={':s_restictions': s_restictions, ':s_allowed': s_allowed},
-            ReturnValues="UPDATED_NEW"
-        )
+def put_item(remove, addon, item_id=None):
+    if item_id:
+        item = get_item(item_id)
+        if item:
+            table.update_item(
+                Key={'pk': item_id},
+                UpdateExpression="SET remove = :s_remove, allowed = :s_addon",
+                ExpressionAttributeValues={':s_remove': remove, ':s_addon': addon},
+                ReturnValues="UPDATED_NEW"
+            )
     else:
         table.put_item(
             Item={
                 'pk': item_id,
-                'restictions': 'cart#123',
-                'allowed': ''
+                'remove': remove,
+                'addon': addon
             }
         )
