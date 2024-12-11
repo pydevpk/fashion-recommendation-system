@@ -200,12 +200,12 @@ def get_recommendate(item_id: int):
         array_1 = apply_exact_matching_rule(array_0, data, item_id)
         print('LENGTH: ' ,len(array_1))
         print("ARRAY: ", array_1)
-        array_1 = distinct_and_sort_by_best_seller(array_1, data)
+        array_1 = distinct_and_sort_by_best_seller(array_1, data, item_id)
         print('LENGTH: ' ,len(array_1))
         print("ARRAY: ", array_1)
         if len(array_1) >= 6:
             array_1_plus = apply_exact_matching_rule(array_0, data, item_id, price_tolerance=0.4, action="positive")
-            array_1 += distinct_and_sort_by_best_seller(array_1_plus, data)
+            array_1 += distinct_and_sort_by_best_seller(array_1_plus, data, item_id)
             injections = inject_related_style_shapes(array_1, data, item_id)
             array_1 += injections
             final_result += array_1
@@ -220,12 +220,12 @@ def get_recommendate(item_id: int):
         array_2 = apply_exact_matching_rule(array_0, data, item_id, 0.2, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
         print('LENGTH: ' ,len(array_2))
         print("ARRAY: ", array_2)
-        array_2 = distinct_and_sort_by_best_seller(array_2, data)
+        array_2 = distinct_and_sort_by_best_seller(array_2, data, item_id)
         print('LENGTH: ' ,len(array_2))
         print("ARRAY: ", array_2)
         if len(array_2) >= 6:
             array_2_plus = apply_exact_matching_rule(array_0, data, item_id, 0.4, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-            array_2 += distinct_and_sort_by_best_seller(array_2_plus, data)
+            array_2 += distinct_and_sort_by_best_seller(array_2_plus, data, item_id)
             injections = inject_related_style_shapes(array_2, data, item_id)
             array_2 += injections
             final_result += array_2
@@ -240,12 +240,12 @@ def get_recommendate(item_id: int):
         array_3 = apply_exact_matching_rule(array_0, data, item_id, 0.2, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
         print('LENGTH: ' ,len(array_3))
         print("ARRAY: ", array_3)
-        array_3 = distinct_and_sort_by_best_seller(array_3, data)
+        array_3 = distinct_and_sort_by_best_seller(array_3, data, item_id)
         print('LENGTH: ' ,len(array_3))
         print("ARRAY: ", array_3)
         if len(array_3) >= 6:
             array_3_plus = apply_exact_matching_rule(array_0, data, item_id, 0.4, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-            array_3 += distinct_and_sort_by_best_seller(array_3_plus, data)
+            array_3 += distinct_and_sort_by_best_seller(array_3_plus, data, item_id)
             injections = inject_related_style_shapes(array_3, data, item_id)
             array_3 += injections
             final_result += array_3
@@ -260,12 +260,12 @@ def get_recommendate(item_id: int):
         array_4 = apply_exact_matching_rule(array_0, data, item_id, 0.2, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
         print('LENGTH: ' ,len(array_4))
         print("ARRAY: ", array_4)
-        array_4 = distinct_and_sort_by_best_seller(array_4, data)
+        array_4 = distinct_and_sort_by_best_seller(array_4, data, item_id)
         print('LENGTH: ' ,len(array_4))
         print("ARRAY: ", array_4)
         if len(array_4) >= 6:
             array_4_plus = apply_exact_matching_rule(array_0, data, item_id, 0.4, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-            array_4 += distinct_and_sort_by_best_seller(array_4_plus, data)
+            array_4 += distinct_and_sort_by_best_seller(array_4_plus, data, item_id)
             injections = inject_related_style_shapes(array_4, data, item_id)
             array_4 += injections
             final_result += array_4
@@ -280,12 +280,12 @@ def get_recommendate(item_id: int):
         array_5 = apply_exact_matching_rule(array_0, data, item_id, 0.4)
         print('LENGTH: ' ,len(array_5))
         print("ARRAY: ", array_5)
-        array_5 = distinct_and_sort_by_best_seller(array_5, data)
+        array_5 = distinct_and_sort_by_best_seller(array_5, data, item_id)
         print('LENGTH: ' ,len(array_5))
         print("ARRAY: ", array_5)
         if len(array_5) >= 6:
             array_5_plus = apply_exact_matching_rule(array_0, data, item_id, 0.6, action="positive")
-            array_5 += distinct_and_sort_by_best_seller(array_5_plus, data)
+            array_5 += distinct_and_sort_by_best_seller(array_5_plus, data, item_id)
             injections = inject_related_style_shapes(array_5, data, item_id)
             array_5 += injections
             final_result += array_5
@@ -300,12 +300,12 @@ def get_recommendate(item_id: int):
         array_6 = apply_exact_matching_rule(array_0, data, item_id, 0.4, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
         print('LENGTH: ' ,len(array_6))
         print("ARRAY: ", array_6)
-        array_6 = distinct_and_sort_by_best_seller(array_6, data)
+        array_6 = distinct_and_sort_by_best_seller(array_6, data, item_id)
         print('LENGTH: ' ,len(array_6))
         print("ARRAY: ", array_6)
         if len(array_6) >= 6:
             array_6_plus = apply_exact_matching_rule(array_0, data, item_id, 0.6, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-            array_6 += distinct_and_sort_by_best_seller(array_6_plus, data)
+            array_6 += distinct_and_sort_by_best_seller(array_6_plus, data, item_id)
             injections = inject_related_style_shapes(array_6, data, item_id)
             array_6 += injections
             final_result + array_6
@@ -320,12 +320,12 @@ def get_recommendate(item_id: int):
         array_7 = apply_exact_matching_rule(array_0, data, item_id, 0.4, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
         print('LENGTH: ' ,len(array_7))
         print("ARRAY: ", array_7)
-        array_7 = distinct_and_sort_by_best_seller(array_7, data)
+        array_7 = distinct_and_sort_by_best_seller(array_7, data, item_id)
         print('LENGTH: ' ,len(array_7))
         print("ARRAY: ", array_7)
         if len(array_7) >= 6:
             array_7_plus = apply_exact_matching_rule(array_0, data, item_id, 0.6, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-            array_7 += distinct_and_sort_by_best_seller(array_7_plus, data)
+            array_7 += distinct_and_sort_by_best_seller(array_7_plus, data, item_id)
             injections = inject_related_style_shapes(array_7, data, item_id)
             array_7 += injections
             final_result += array_7
@@ -340,12 +340,12 @@ def get_recommendate(item_id: int):
         array_8 = apply_exact_matching_rule(array_0, data, item_id, 0.4, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
         print('LENGTH: ' ,len(array_8))
         print("ARRAY: ", array_8)
-        array_8 = distinct_and_sort_by_best_seller(array_8, data)
+        array_8 = distinct_and_sort_by_best_seller(array_8, data, item_id)
         print('LENGTH: ' ,len(array_8))
         print("ARRAY: ", array_8)
         if len(array_8) >= 6:
             array_8_plus = apply_exact_matching_rule(array_0, data, item_id, 0.6, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-            array_8 += distinct_and_sort_by_best_seller(array_8_plus, data)
+            array_8 += distinct_and_sort_by_best_seller(array_8_plus, data, item_id)
             injections = inject_related_style_shapes(array_8, data, item_id)
             array_8 += injections
             final_result += array_8
@@ -360,12 +360,12 @@ def get_recommendate(item_id: int):
         array_9 = apply_exact_matching_rule(array_0, data, item_id, 0.6)
         print('LENGTH: ' ,len(array_9))
         print("ARRAY: ", array_9)
-        array_9 = distinct_and_sort_by_best_seller(array_9, data)
+        array_9 = distinct_and_sort_by_best_seller(array_9, data, item_id)
         print('LENGTH: ' ,len(array_9))
         print("ARRAY: ", array_9)
         if len(array_9) >= 6:
             array_9_plus = apply_exact_matching_rule(array_0, data, item_id, 1, action="positive")
-            array_9 += distinct_and_sort_by_best_seller(array_9_plus, data)
+            array_9 += distinct_and_sort_by_best_seller(array_9_plus, data, item_id)
             injections = inject_related_style_shapes(array_9, data, item_id)
             array_9 += injections
             final_result += array_9
@@ -380,12 +380,12 @@ def get_recommendate(item_id: int):
         array_10 = apply_exact_matching_rule(array_0, data, item_id, 0.6, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
         print('LENGTH: ' ,len(array_10))
         print("ARRAY: ", array_10)
-        array_10 = distinct_and_sort_by_best_seller(array_10, data)
+        array_10 = distinct_and_sort_by_best_seller(array_10, data, item_id)
         print('LENGTH: ' ,len(array_10))
         print("ARRAY: ", array_10)
         if len(array_10) >= 6:
             array_10_plus = apply_exact_matching_rule(array_0, data, item_id, 1, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-            array_10 += distinct_and_sort_by_best_seller(array_10_plus, data)
+            array_10 += distinct_and_sort_by_best_seller(array_10_plus, data, item_id)
             injections = inject_related_style_shapes(array_10, data, item_id)
             array_10 += injections
             final_result += array_10
@@ -400,12 +400,12 @@ def get_recommendate(item_id: int):
         array_11 = apply_exact_matching_rule(array_0, data, item_id, 0.6, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
         print('LENGTH: ' ,len(array_11))
         print("ARRAY: ", array_11)
-        array_11 = distinct_and_sort_by_best_seller(array_11, data)
+        array_11 = distinct_and_sort_by_best_seller(array_11, data, item_id)
         print('LENGTH: ' ,len(array_11))
         print("ARRAY: ", array_11)
         if len(array_11) >= 6:
             array_11_plus = apply_exact_matching_rule(array_0, data, item_id, 1, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-            array_11 += distinct_and_sort_by_best_seller(array_11_plus, data)
+            array_11 += distinct_and_sort_by_best_seller(array_11_plus, data, item_id)
             injections = inject_related_style_shapes(array_11, data, item_id)
             array_11 += injections
             final_result += array_11
@@ -420,12 +420,12 @@ def get_recommendate(item_id: int):
         array_12 = apply_exact_matching_rule(array_0, data, item_id, 0.6, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
         print('LENGTH: ' ,len(array_12))
         print("ARRAY: ", array_12)
-        array_12 = distinct_and_sort_by_best_seller(array_12, data)
+        array_12 = distinct_and_sort_by_best_seller(array_12, data, item_id)
         print('LENGTH: ' ,len(array_12))
         print("ARRAY: ", array_12)
         if len(array_12) >= 6:
             array_12_plus = apply_exact_matching_rule(array_0, data, item_id, 1, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-            array_12 += distinct_and_sort_by_best_seller(array_12_plus, data)
+            array_12 += distinct_and_sort_by_best_seller(array_12_plus, data, item_id)
             injections = inject_related_style_shapes(array_12, data, item_id)
             array_12 += injections
             final_result += array_12
@@ -440,12 +440,12 @@ def get_recommendate(item_id: int):
         array_13 = apply_exact_matching_rule(array_0, data, item_id, 1)
         print('LENGTH: ' ,len(array_13))
         print("ARRAY: ", array_13)
-        array_13 = distinct_and_sort_by_best_seller(array_13, data)
+        array_13 = distinct_and_sort_by_best_seller(array_13, data, item_id)
         print('LENGTH: ' ,len(array_13))
         print("ARRAY: ", array_13)
         if len(array_13) >= 6:
             array_13_plus = apply_exact_matching_rule(array_0, data, item_id, price_tolerance=0, action="positive")
-            array_13 += distinct_and_sort_by_best_seller(array_13_plus, data)
+            array_13 += distinct_and_sort_by_best_seller(array_13_plus, data, item_id)
             injections = inject_related_style_shapes(array_13, data, item_id)
             array_13 += injections
             final_result += array_13
@@ -460,12 +460,12 @@ def get_recommendate(item_id: int):
         array_14 = apply_exact_matching_rule(array_0, data, item_id, 1, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
         print('LENGTH: ' ,len(array_14))
         print("ARRAY: ", array_14)
-        array_14 = distinct_and_sort_by_best_seller(array_14, data)
+        array_14 = distinct_and_sort_by_best_seller(array_14, data, item_id)
         print('LENGTH: ' ,len(array_14))
         print("ARRAY: ", array_14)
         if len(array_14) >= 6:
             array_14_plus = apply_exact_matching_rule(array_0, data, item_id, price_tolerance=0, base_properties=["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-            array_14 += distinct_and_sort_by_best_seller(array_14_plus, data)
+            array_14 += distinct_and_sort_by_best_seller(array_14_plus, data, item_id)
             injections = inject_related_style_shapes(array_14, data, item_id)
             array_14 += injections
             final_result += array_14
@@ -480,12 +480,12 @@ def get_recommendate(item_id: int):
         array_15 = apply_exact_matching_rule(array_0, data, item_id, 1, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
         print('LENGTH: ' ,len(array_15))
         print("ARRAY: ", array_15)
-        array_15 = distinct_and_sort_by_best_seller(array_15, data)
+        array_15 = distinct_and_sort_by_best_seller(array_15, data, item_id)
         print('LENGTH: ' ,len(array_15))
         print("ARRAY: ", array_15)
         if len(array_15) >= 6:
             array_15_plus = apply_exact_matching_rule(array_0, data, item_id, price_tolerance=0, base_properties=["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-            array_15 += distinct_and_sort_by_best_seller(array_15_plus, data)
+            array_15 += distinct_and_sort_by_best_seller(array_15_plus, data, item_id)
             injections = inject_related_style_shapes(array_15, data, item_id)
             array_15 += injections
             final_result += array_15
@@ -500,12 +500,12 @@ def get_recommendate(item_id: int):
         array_16 = apply_exact_matching_rule(array_0, data, item_id, 1, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
         print('LENGTH: ' ,len(array_16))
         print("ARRAY: ", array_16)
-        array_16 = distinct_and_sort_by_best_seller(array_16, data)
+        array_16 = distinct_and_sort_by_best_seller(array_16, data, item_id)
         print('LENGTH: ' ,len(array_16))
         print("ARRAY: ", array_16)
         if len(array_16) >= 6:
             array_16_plus = apply_exact_matching_rule(array_0, data, item_id, price_tolerance=0, base_properties=["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-            array_16 += distinct_and_sort_by_best_seller(array_16_plus, data)
+            array_16 += distinct_and_sort_by_best_seller(array_16_plus, data, item_id)
             injections = inject_related_style_shapes(array_16, data, item_id)
             array_16 += injections
             final_result += array_16
@@ -520,7 +520,7 @@ def get_recommendate(item_id: int):
         array_17 = apply_exact_matching_rule(array_0, data, item_id, 0)
         print('LENGTH: ' ,len(array_17))
         print("ARRAY: ", array_17)
-        array_17 = distinct_and_sort_by_best_seller(array_17, data)
+        array_17 = distinct_and_sort_by_best_seller(array_17, data, item_id)
         print('LENGTH: ' ,len(array_17))
         print("ARRAY: ", array_17)
         if len(array_17) >= 6:
@@ -538,7 +538,7 @@ def get_recommendate(item_id: int):
         array_18 = apply_exact_matching_rule(array_0, data, item_id, 0, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
         print('LENGTH: ' ,len(array_18))
         print("ARRAY: ", array_18)
-        array_18 = distinct_and_sort_by_best_seller(array_18, data)
+        array_18 = distinct_and_sort_by_best_seller(array_18, data, item_id)
         print('LENGTH: ' ,len(array_18))
         print("ARRAY: ", array_18)
         if len(array_18) >= 6:
@@ -556,7 +556,7 @@ def get_recommendate(item_id: int):
         array_19 = apply_exact_matching_rule(array_0, data, item_id, 0, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
         print('LENGTH: ' ,len(array_19))
         print("ARRAY: ", array_19)
-        array_19 = distinct_and_sort_by_best_seller(array_19, data)
+        array_19 = distinct_and_sort_by_best_seller(array_19, data, item_id)
         print('LENGTH: ' ,len(array_19))
         print("ARRAY: ", array_19)
         if len(array_19) >= 6:
@@ -574,7 +574,7 @@ def get_recommendate(item_id: int):
         array_20 = apply_exact_matching_rule(array_0, data, item_id, 0, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
         print('LENGTH: ' ,len(array_20))
         print("ARRAY: ", array_20)
-        array_20 = distinct_and_sort_by_best_seller(array_20, data)
+        array_20 = distinct_and_sort_by_best_seller(array_20, data, item_id)
         print('LENGTH: ' ,len(array_20))
         print("ARRAY: ", array_20)
         if len(array_20) >= 6:
@@ -598,7 +598,7 @@ def get_recommendate(item_id: int):
         array_21 = get_similar_name_styles(array_21_, data, item_id)
         print('LENGTH: ' ,len(array_21))
         print("ARRAY: ", array_21)
-        array_21 = distinct_and_sort_by_best_seller(array_21, data)
+        array_21 = distinct_and_sort_by_best_seller(array_21, data, item_id)
         print('LENGTH: ' ,len(array_21))
         print("ARRAY: ", array_21)
         array_21 += injections
@@ -620,7 +620,7 @@ def get_recommendate(item_id: int):
         array_22 = get_similar_category_style(array_22_, data, item_id)
         print('LENGTH: ' ,len(array_22))
         print("ARRAY: ", array_22)
-        array_22 = distinct_and_sort_by_best_seller(array_22, data)
+        array_22 = distinct_and_sort_by_best_seller(array_22, data, item_id)
         print('LENGTH: ' ,len(array_22))
         print("ARRAY: ", array_22)
         # if len(array_22) >= 6:
@@ -653,7 +653,7 @@ def get_recommendate(item_id: int):
 
 def reapply(array_0, item_id):
     array_1 = apply_exact_matching_rule(array_0, data, item_id)
-    array_1 = distinct_and_sort_by_best_seller(array_1, data)
+    array_1 = distinct_and_sort_by_best_seller(array_1, data, item_id)
 
 @app.get("/items/{id}", response_class=HTMLResponse)
 async def read_item(request: Request, id: int):
@@ -753,12 +753,12 @@ async def read_item(request: Request, id: int):
     array_1 = apply_exact_matching_rule(array_0, data, item_id)
     print('LENGTH: ' ,len(array_1))
     print("ARRAY: ", array_1)
-    array_1 = distinct_and_sort_by_best_seller(array_1, data)
+    array_1 = distinct_and_sort_by_best_seller(array_1, data, item_id)
     print('LENGTH: ' ,len(array_1))
     print("ARRAY: ", array_1)
     if len(array_1) >= 6:
         array_1_plus = apply_exact_matching_rule(array_0, data, item_id, price_tolerance=0.4, action="positive")
-        array_1 += distinct_and_sort_by_best_seller(array_1_plus, data)
+        array_1 += distinct_and_sort_by_best_seller(array_1_plus, data, item_id)
         print('LENGTH: ' ,len(array_1))
         print("ARRAY: ", array_1)
         injections = inject_related_style_shapes(array_1, data, item_id)
@@ -798,12 +798,12 @@ async def read_item(request: Request, id: int):
     array_2 = apply_exact_matching_rule(array_0, data, item_id, 0.2, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
     print('LENGTH: ' ,len(array_2))
     print("ARRAY: ", array_2)
-    array_2 = distinct_and_sort_by_best_seller(array_2, data)
+    array_2 = distinct_and_sort_by_best_seller(array_2, data, item_id)
     print('LENGTH: ' ,len(array_2))
     print("ARRAY: ", array_2)
     if len(array_2) >= 6:
         array_2_plus = apply_exact_matching_rule(array_0, data, item_id, 0.4, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-        array_2 += distinct_and_sort_by_best_seller(array_2_plus, data)
+        array_2 += distinct_and_sort_by_best_seller(array_2_plus, data, item_id)
         print('LENGTH: ' ,len(array_2))
         print("ARRAY: ", array_2)
         injections = inject_related_style_shapes(array_2, data, item_id)
@@ -843,12 +843,12 @@ async def read_item(request: Request, id: int):
     array_3 = apply_exact_matching_rule(array_0, data, item_id, 0.2, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
     print('LENGTH: ' ,len(array_3))
     print("ARRAY: ", array_3)
-    array_3 = distinct_and_sort_by_best_seller(array_3, data)
+    array_3 = distinct_and_sort_by_best_seller(array_3, data, item_id)
     print('LENGTH: ' ,len(array_3))
     print("ARRAY: ", array_3)
     if len(array_3) >= 6:
         array_3_plus = apply_exact_matching_rule(array_0, data, item_id, 0.4, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-        array_3 += distinct_and_sort_by_best_seller(array_3_plus, data)
+        array_3 += distinct_and_sort_by_best_seller(array_3_plus, data, item_id)
         injections = inject_related_style_shapes(array_3, data, item_id)
         print('LENGTH injections: ' ,len(injections))
         print("ARRAY injections: ", injections)
@@ -886,12 +886,12 @@ async def read_item(request: Request, id: int):
     array_4 = apply_exact_matching_rule(array_0, data, item_id, 0.2, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
     print('LENGTH: ' ,len(array_4))
     print("ARRAY: ", array_4)
-    array_4 = distinct_and_sort_by_best_seller(array_4, data)
+    array_4 = distinct_and_sort_by_best_seller(array_4, data, item_id)
     print('LENGTH: ' ,len(array_4))
     print("ARRAY: ", array_4)
     if len(array_4) >= 6:
         array_4_plus = apply_exact_matching_rule(array_0, data, item_id, 0.4, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-        array_4 += distinct_and_sort_by_best_seller(array_4_plus, data)
+        array_4 += distinct_and_sort_by_best_seller(array_4_plus, data, item_id)
         injections = inject_related_style_shapes(array_4, data, item_id)
         print('LENGTH injections: ' ,len(injections))
         print("ARRAY injections: ", injections)
@@ -929,12 +929,12 @@ async def read_item(request: Request, id: int):
     array_5 = apply_exact_matching_rule(array_0, data, item_id, 0.4)
     print('LENGTH: ' ,len(array_5))
     print("ARRAY: ", array_5)
-    array_5 = distinct_and_sort_by_best_seller(array_5, data)
+    array_5 = distinct_and_sort_by_best_seller(array_5, data, item_id)
     print('LENGTH: ' ,len(array_5))
     print("ARRAY: ", array_5)
     if len(array_5) >= 6:
         array_5_plus = apply_exact_matching_rule(array_0, data, item_id, 0.6, action="positive")
-        array_5 += distinct_and_sort_by_best_seller(array_5_plus, data)
+        array_5 += distinct_and_sort_by_best_seller(array_5_plus, data, item_id)
         injections = inject_related_style_shapes(array_5, data, item_id)
         print('LENGTH injections: ' ,len(injections))
         print("ARRAY injections: ", injections)
@@ -972,12 +972,12 @@ async def read_item(request: Request, id: int):
     array_6 = apply_exact_matching_rule(array_0, data, item_id, 0.4, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
     print('LENGTH: ' ,len(array_6))
     print("ARRAY: ", array_6)
-    array_6 = distinct_and_sort_by_best_seller(array_6, data)
+    array_6 = distinct_and_sort_by_best_seller(array_6, data, item_id)
     print('LENGTH: ' ,len(array_6))
     print("ARRAY: ", array_6)
     if len(array_6) >= 6:
         array_6_plus = apply_exact_matching_rule(array_0, data, item_id, 0.6, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-        array_6 += distinct_and_sort_by_best_seller(array_6_plus, data)
+        array_6 += distinct_and_sort_by_best_seller(array_6_plus, data, item_id)
         injections = inject_related_style_shapes(array_6, data, item_id)
         print('LENGTH injections: ' ,len(injections))
         print("ARRAY injections: ", injections)
@@ -1015,12 +1015,12 @@ async def read_item(request: Request, id: int):
     array_7 = apply_exact_matching_rule(array_0, data, item_id, 0.4, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
     print('LENGTH: ' ,len(array_7))
     print("ARRAY: ", array_7)
-    array_7 = distinct_and_sort_by_best_seller(array_7, data)
+    array_7 = distinct_and_sort_by_best_seller(array_7, data, item_id)
     print('LENGTH: ' ,len(array_7))
     print("ARRAY: ", array_7)
     if len(array_7) >= 6:
         array_7_plus = apply_exact_matching_rule(array_0, data, item_id, 0.6, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-        array_7 += distinct_and_sort_by_best_seller(array_7_plus, data)
+        array_7 += distinct_and_sort_by_best_seller(array_7_plus, data, item_id)
         injections = inject_related_style_shapes(array_7, data, item_id)
         print('LENGTH injections: ' ,len(injections))
         print("ARRAY injections: ", injections)
@@ -1058,12 +1058,12 @@ async def read_item(request: Request, id: int):
     array_8 = apply_exact_matching_rule(array_0, data, item_id, 0.4, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
     print('LENGTH: ' ,len(array_8))
     print("ARRAY: ", array_8)
-    array_8 = distinct_and_sort_by_best_seller(array_8, data)
+    array_8 = distinct_and_sort_by_best_seller(array_8, data, item_id)
     print('LENGTH: ' ,len(array_8))
     print("ARRAY: ", array_8)
     if len(array_8) >= 6:
         array_8_plus = apply_exact_matching_rule(array_0, data, item_id, 0.6, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-        array_8 += distinct_and_sort_by_best_seller(array_8_plus, data)
+        array_8 += distinct_and_sort_by_best_seller(array_8_plus, data, item_id)
         injections = inject_related_style_shapes(array_8, data, item_id)
         print('LENGTH injections: ' ,len(injections))
         print("ARRAY injections: ", injections)
@@ -1101,12 +1101,12 @@ async def read_item(request: Request, id: int):
     array_9 = apply_exact_matching_rule(array_0, data, item_id, 0.6)
     print('LENGTH: ' ,len(array_9))
     print("ARRAY: ", array_9)
-    array_9 = distinct_and_sort_by_best_seller(array_9, data)
+    array_9 = distinct_and_sort_by_best_seller(array_9, data, item_id)
     print('LENGTH: ' ,len(array_9))
     print("ARRAY: ", array_9)
     if len(array_9) >= 6:
         array_9_plus = apply_exact_matching_rule(array_0, data, item_id, 1, action="positive")
-        array_9 += distinct_and_sort_by_best_seller(array_9_plus, data)
+        array_9 += distinct_and_sort_by_best_seller(array_9_plus, data, item_id)
         injections = inject_related_style_shapes(array_9, data, item_id)
         print('LENGTH injections: ' ,len(injections))
         print("ARRAY injections: ", injections)
@@ -1144,12 +1144,12 @@ async def read_item(request: Request, id: int):
     array_10 = apply_exact_matching_rule(array_0, data, item_id, 0.6, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
     print('LENGTH: ' ,len(array_10))
     print("ARRAY: ", array_10)
-    array_10 = distinct_and_sort_by_best_seller(array_10, data)
+    array_10 = distinct_and_sort_by_best_seller(array_10, data, item_id)
     print('LENGTH: ' ,len(array_10))
     print("ARRAY: ", array_10)
     if len(array_10) >= 6:
         array_10_plus = apply_exact_matching_rule(array_0, data, item_id, 1, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-        array_10 += distinct_and_sort_by_best_seller(array_10_plus, data)
+        array_10 += distinct_and_sort_by_best_seller(array_10_plus, data, item_id)
         injections = inject_related_style_shapes(array_10, data, item_id)
         print('LENGTH injections: ' ,len(injections))
         print("ARRAY injections: ", injections)
@@ -1187,12 +1187,12 @@ async def read_item(request: Request, id: int):
     array_11 = apply_exact_matching_rule(array_0, data, item_id, 0.6, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
     print('LENGTH: ' ,len(array_11))
     print("ARRAY: ", array_11)
-    array_11 = distinct_and_sort_by_best_seller(array_11, data)
+    array_11 = distinct_and_sort_by_best_seller(array_11, data, item_id)
     print('LENGTH: ' ,len(array_11))
     print("ARRAY: ", array_11)
     if len(array_11) >= 6:
         array_11_plus = apply_exact_matching_rule(array_0, data, item_id, 1, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-        array_11 += distinct_and_sort_by_best_seller(array_11_plus, data)
+        array_11 += distinct_and_sort_by_best_seller(array_11_plus, data, item_id)
         injections = inject_related_style_shapes(array_11, data, item_id)
         print('LENGTH injections: ' ,len(injections))
         print("ARRAY injections: ", injections)
@@ -1230,12 +1230,12 @@ async def read_item(request: Request, id: int):
     array_12 = apply_exact_matching_rule(array_0, data, item_id, 0.6, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
     print('LENGTH: ' ,len(array_12))
     print("ARRAY: ", array_12)
-    array_12 = distinct_and_sort_by_best_seller(array_12, data)
+    array_12 = distinct_and_sort_by_best_seller(array_12, data, item_id)
     print('LENGTH: ' ,len(array_12))
     print("ARRAY: ", array_12)
     if len(array_12) >= 6:
         array_12_plus = apply_exact_matching_rule(array_0, data, item_id, 1, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-        array_12 += distinct_and_sort_by_best_seller(array_12_plus, data)
+        array_12 += distinct_and_sort_by_best_seller(array_12_plus, data, item_id)
         injections = inject_related_style_shapes(array_12, data, item_id)
         print('LENGTH injections: ' ,len(injections))
         print("ARRAY injections: ", injections)
@@ -1273,12 +1273,12 @@ async def read_item(request: Request, id: int):
     array_13 = apply_exact_matching_rule(array_0, data, item_id, 1)
     print('LENGTH: ' ,len(array_13))
     print("ARRAY: ", array_13)
-    array_13 = distinct_and_sort_by_best_seller(array_13, data)
+    array_13 = distinct_and_sort_by_best_seller(array_13, data, item_id)
     print('LENGTH: ' ,len(array_13))
     print("ARRAY: ", array_13)
     if len(array_13) >= 6:
         array_13_plus = apply_exact_matching_rule(array_0, data, item_id, price_tolerance=0, action="positive")
-        array_13 += distinct_and_sort_by_best_seller(array_13_plus, data)
+        array_13 += distinct_and_sort_by_best_seller(array_13_plus, data, item_id)
         injections = inject_related_style_shapes(array_13, data, item_id)
         print('LENGTH injections: ' ,len(injections))
         print("ARRAY injections: ", injections)
@@ -1316,12 +1316,12 @@ async def read_item(request: Request, id: int):
     array_14 = apply_exact_matching_rule(array_0, data, item_id, 1, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
     print('LENGTH: ' ,len(array_14))
     print("ARRAY: ", array_14)
-    array_14 = distinct_and_sort_by_best_seller(array_14, data)
+    array_14 = distinct_and_sort_by_best_seller(array_14, data, item_id)
     print('LENGTH: ' ,len(array_14))
     print("ARRAY: ", array_14)
     if len(array_14) >= 6:
         array_14_plus = apply_exact_matching_rule(array_0, data, item_id, price_tolerance=0, base_properties=["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-        array_14 += distinct_and_sort_by_best_seller(array_14_plus, data)
+        array_14 += distinct_and_sort_by_best_seller(array_14_plus, data, item_id)
         injections = inject_related_style_shapes(array_14, data, item_id)
         print('LENGTH injections: ' ,len(injections))
         print("ARRAY injections: ", injections)
@@ -1359,12 +1359,12 @@ async def read_item(request: Request, id: int):
     array_15 = apply_exact_matching_rule(array_0, data, item_id, 1, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
     print('LENGTH: ' ,len(array_15))
     print("ARRAY: ", array_15)
-    array_15 = distinct_and_sort_by_best_seller(array_15, data)
+    array_15 = distinct_and_sort_by_best_seller(array_15, data, item_id)
     print('LENGTH: ' ,len(array_15))
     print("ARRAY: ", array_15)
     if len(array_15) >= 6:
         array_15_plus = apply_exact_matching_rule(array_0, data, item_id, price_tolerance=0, base_properties=["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-        array_15 += distinct_and_sort_by_best_seller(array_15_plus, data)
+        array_15 += distinct_and_sort_by_best_seller(array_15_plus, data, item_id)
         injections = inject_related_style_shapes(array_15, data, item_id)
         print('LENGTH injections: ' ,len(injections))
         print("ARRAY injections: ", injections)
@@ -1402,12 +1402,12 @@ async def read_item(request: Request, id: int):
     array_16 = apply_exact_matching_rule(array_0, data, item_id, 1, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
     print('LENGTH: ' ,len(array_16))
     print("ARRAY: ", array_16)
-    array_16 = distinct_and_sort_by_best_seller(array_16, data)
+    array_16 = distinct_and_sort_by_best_seller(array_16, data, item_id)
     print('LENGTH: ' ,len(array_16))
     print("ARRAY: ", array_16)
     if len(array_16) >= 6:
         array_16_plus = apply_exact_matching_rule(array_0, data, item_id, price_tolerance=0, base_properties=["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"], action="positive")
-        array_16 += distinct_and_sort_by_best_seller(array_16_plus, data)
+        array_16 += distinct_and_sort_by_best_seller(array_16_plus, data, item_id)
         injections = inject_related_style_shapes(array_16, data, item_id)
         print('LENGTH injections: ' ,len(injections))
         print("ARRAY injections: ", injections)
@@ -1445,7 +1445,7 @@ async def read_item(request: Request, id: int):
     array_17 = apply_exact_matching_rule(array_0, data, item_id, 0)
     print('LENGTH: ' ,len(array_17))
     print("ARRAY: ", array_17)
-    array_17 = distinct_and_sort_by_best_seller(array_17, data)
+    array_17 = distinct_and_sort_by_best_seller(array_17, data, item_id)
     print('LENGTH: ' ,len(array_17))
     print("ARRAY: ", array_17)
     if len(array_17) >= 6:
@@ -1488,7 +1488,7 @@ async def read_item(request: Request, id: int):
     array_18 = apply_exact_matching_rule(array_0, data, item_id, 0, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
     print('LENGTH: ' ,len(array_18))
     print("ARRAY: ", array_18)
-    array_18 = distinct_and_sort_by_best_seller(array_18, data)
+    array_18 = distinct_and_sort_by_best_seller(array_18, data, item_id)
     print('LENGTH: ' ,len(array_18))
     print("ARRAY: ", array_18)
     if len(array_18) >= 6:
@@ -1529,7 +1529,7 @@ async def read_item(request: Request, id: int):
     array_19 = apply_exact_matching_rule(array_0, data, item_id, 0, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
     print('LENGTH: ' ,len(array_19))
     print("ARRAY: ", array_19)
-    array_19 = distinct_and_sort_by_best_seller(array_19, data)
+    array_19 = distinct_and_sort_by_best_seller(array_19, data, item_id)
     print('LENGTH: ' ,len(array_19))
     print("ARRAY: ", array_19)
     if len(array_19) >= 6:
@@ -1570,7 +1570,7 @@ async def read_item(request: Request, id: int):
     array_20 = apply_exact_matching_rule(array_0, data, item_id, 0, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
     print('LENGTH: ' ,len(array_20))
     print("ARRAY: ", array_20)
-    array_20 = distinct_and_sort_by_best_seller(array_20, data)
+    array_20 = distinct_and_sort_by_best_seller(array_20, data, item_id)
     print('LENGTH: ' ,len(array_20))
     print("ARRAY: ", array_20)
     if len(array_20) >= 6:
@@ -1617,7 +1617,7 @@ async def read_item(request: Request, id: int):
     array_21 = get_similar_name_styles(array_21_, data, item_id)
     print('LENGTH: ' ,len(array_21))
     print("ARRAY: ", array_21)
-    array_21 = distinct_and_sort_by_best_seller(array_21, data)
+    array_21 = distinct_and_sort_by_best_seller(array_21, data, item_id)
     print('LENGTH: ' ,len(array_21))
     print("ARRAY: ", array_21)
     array_21 += injections
@@ -1663,7 +1663,7 @@ async def read_item(request: Request, id: int):
     array_22 = get_similar_category_style(array_22_, data, item_id)
     print('LENGTH: ' ,len(array_22))
     print("ARRAY: ", array_22)
-    array_22 = distinct_and_sort_by_best_seller(array_22, data)
+    array_22 = distinct_and_sort_by_best_seller(array_22, data, item_id)
     print('LENGTH: ' ,len(array_22))
     print("ARRAY: ", array_22)
     # if len(array_22) >= 6:

@@ -81,14 +81,17 @@ def apply_exact_matching_rule(attribute_based, data, base_item_id, price_toleran
 
 
 # Distinct Styles and Sorting by Best Seller
-def distinct_and_sort_by_best_seller(attribute_based, data):
+def distinct_and_sort_by_best_seller(attribute_based, data, item_id):
     unique_styles = {}
+    bese = data.loc[data["ITEM_ID"] == item_id, "UNIQUE_ITEM_CD"].values[0]
     for item in attribute_based:
         style = data.loc[data["ITEM_ID"] == item, "UNIQUE_ITEM_CD"].values[0]
-        best = data.loc[data["ITEM_ID"] == item, "BestSeller_DisplayOrder"].values[0]
         if style not in unique_styles or data.loc[data["ITEM_ID"] == item, "BestSeller_DisplayOrder"].values[0] < data.loc[data["ITEM_ID"] == unique_styles[style], "BestSeller_DisplayOrder"].values[0]:
             unique_styles[style] = item
-    
+    # print(unique_styles, '111111111111111111111111111')
+    if bese in unique_styles:
+        unique_styles.pop(bese)
+    # print(unique_styles, '22222222222222222222222222')
     # Sort by BestSeller_DisplayOrder
     sorted_items = sorted(unique_styles.values(), key=lambda x: data.loc[data["ITEM_ID"] == x, "BestSeller_DisplayOrder"].values[0])
     return sorted_items
