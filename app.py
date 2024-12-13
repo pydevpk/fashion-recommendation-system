@@ -654,7 +654,9 @@ async def read_item(request: Request, id: int):
             "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
             "ITEM_TYPE": product_row["ITEM_TYPE"],
             "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-            "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+            "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+            "ITEM_CD": product_row['ITEM_CD'],
+            "ITEM_NAME": product_row['ITEM_NAME']
         }
     
     if id in CACHED_RESULT:
@@ -670,7 +672,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -762,7 +766,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -807,7 +813,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -850,7 +858,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -893,7 +903,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -936,7 +948,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -979,7 +993,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1022,7 +1038,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1065,7 +1083,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1108,7 +1128,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1151,7 +1173,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1194,7 +1218,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1237,7 +1263,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1280,7 +1308,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1323,7 +1353,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1366,7 +1398,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1409,7 +1443,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1452,7 +1488,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1493,7 +1531,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1534,7 +1574,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1575,7 +1617,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1624,7 +1668,9 @@ async def read_item(request: Request, id: int):
                 "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
                 "ITEM_TYPE": product_row["ITEM_TYPE"],
                 "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+                "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+                "ITEM_CD": product_row['ITEM_CD'],
+                "ITEM_NAME": product_row['ITEM_NAME']
             }
             attribute_based.append(query)
 
@@ -1708,7 +1754,9 @@ async def read_item(request: Request, id: int):
             "PRODUCT_STYLE": product_row["PRODUCT_STYLE"],
             "ITEM_TYPE": product_row["ITEM_TYPE"],
             "IMAGE_URL_VIEW_1": product_row["IMAGE_URL_VIEW_1"],
-            "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"]
+            "C_LEVEL_PRICE": product_row["C_LEVEL_PRICE"],
+            "ITEM_CD": product_row['ITEM_CD'],
+            "ITEM_NAME": product_row['ITEM_NAME']
         }
         attribute_based.append(query)
 
