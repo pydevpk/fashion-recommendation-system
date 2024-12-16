@@ -36,20 +36,20 @@ services:
     container_name: nginx
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - /etc/letsencrypt:/etc/letsencrypt
-      - /var/www/certbot:/var/www/certbot
+      # - /etc/letsencrypt:/etc/letsencrypt
+      # - /var/www/certbot:/var/www/certbot
     ports:
       - "80:80"
       - "443:443"
     depends_on:
       - fastapi-app
-      - certbot
+      # - certbot
     restart: always
   
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt
-      - /var/www/certbot:/var/www/certbot
-    entrypoint: /bin/sh -c 'trap exit TERM; while :; do sleep 1 & wait $!; done'
+  # certbot:
+  #   image: certbot/certbot
+  #   container_name: certbot
+  #   volumes:
+  #     - /etc/letsencrypt:/etc/letsencrypt
+  #     - /var/www/certbot:/var/www/certbot
+  #   entrypoint: /bin/sh -c 'trap exit TERM; while :; do sleep 1 & wait $!; done'
