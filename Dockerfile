@@ -35,9 +35,9 @@ COPY app.py .
 COPY ./templates /app/templates
 COPY rules.py .
 COPY db.py .
+COPY data_ingesion.py .
+COPY env.txt .
 
-# Create the uploads directory and set permissions
-RUN mkdir -p /app/uploads && chmod 777 /app/uploads
 
 # Download required files from S3
 # Replace `<S3_BUCKET>` and `<S3_KEY>` with the actual S3 bucket and object keys

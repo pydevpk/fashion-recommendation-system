@@ -4,7 +4,9 @@ boto3
 scikit-learn
 numpy
 pandas
-# Pillow
-# tensorflow
 python-multipart
 jinja2
+python-dotenv
+SQLAlchemy
+cryptography
+pymysql
