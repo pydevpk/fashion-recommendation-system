@@ -5,6 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates  
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import UploadFile
 from fastapi import File
 from fastapi import Response
@@ -33,6 +34,20 @@ DB_HOST = os.getenv('DB_HOST')
 conn = sqlalchemy.create_engine(f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:3306/{DB_NAME}')
 
 app = FastAPI()
+
+origins = os.getenv('origins', None)
+if origins is None:
+    origins = ['*']
+else:
+    origins = origins.split(',')
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 templates = Jinja2Templates(directory="templates")
 
