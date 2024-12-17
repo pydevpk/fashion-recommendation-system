@@ -139,7 +139,7 @@ async def feedback_detail(item_id: int):
 
 
 
-@app.get("/recoomendate/{item_id}")
+@app.get("/similar-styles-recommendations/{item_id}")
 async def get_recommendate(item_id: int):
     if item_id in data["ITEM_ID"].values:
         global CACHED_RESULT
