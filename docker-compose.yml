@@ -39,3 +39,7 @@ services:
     depends_on:
       - fastapi-app
     restart: always
+
+networks:
+  app-network:
+    driver: bridge
