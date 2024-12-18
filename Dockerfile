@@ -34,7 +34,7 @@ COPY requirements.txt .
 COPY app.py .
 COPY ./templates /app/templates
 COPY rules.py .
-COPY db.py .
+COPY feedback.py .
 COPY data_ingesion.py .
 COPY env.txt .
 

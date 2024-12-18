@@ -23,7 +23,7 @@ import joblib
 from pathlib import Path
 from datetime import datetime
 from rules import apply_lj_product_rule, apply_silver_platinum_rule, apply_exact_matching_rule, distinct_and_sort_by_best_seller, inject_related_style_shapes, aggregate_arrays, get_similar_name_styles, apply_lj_product_rule_df, apply_silver_platinum_rule_df, get_similar_category_style
-from db import get_item, put_item
+from feedback import get_item, put_item
 
 
 load_dotenv('env.txt')
@@ -64,14 +64,15 @@ img_files_list = pickle.load(open("products.pkl", "rb"))
 CACHED_RESULT = {}
 
 
-class Remove(BaseModel):
-    item_id: str
-    remove: list
+class RemoveModel(BaseModel):
+    data: List[int] = []
 
+class AddonDataModel(BaseModel):
+    id: int
+    position: int
 
-class Addon(BaseModel):
-    item_id: str
-    addons: list
+class AddonModel(BaseModel):
+    data: List[AddonDataModel] = []
 
 
 async def normalize_query(query):
@@ -133,16 +134,40 @@ async def feedback_detail(item_id: int):
     return {
         "status": True,
         "message":f"Feedback for item ID: {item_id}",
-        "data": get_item(item_id)
+        "data": await get_item(item_id)
     }
 
 
+@app.post("/feedback-add/{item_id}/")
+async def feedback_add(item_id: int, to_remove: RemoveModel, to_addon: AddonModel):
+    global CACHED_RESULT
+    addon_list = []
+    remove_list = []
+    if len(to_addon.data) > 0:
+        addon_list = [addon.dict() for addon in to_addon.data]
+    if len(to_remove.data) > 0:
+        remove_list = [rm for rm in to_remove.data]
+    if len(to_addon.data) <= 0 and len(to_remove.data) <= 0:
+        return {
+            "status": False,
+            "message": "To data found in body to add or update",
+            "data": []
+        }
+
+    res = await put_item(remove_list, addon_list, item_id)
+    del CACHED_RESULT[item_id]
+    return {
+        "status": True,
+        "message":res,
+        "data": []
+    }
 
 
 @app.get("/similar-styles-recommendations/{item_id}")
 async def get_recommendate(item_id: int):
     if item_id in data["ITEM_ID"].values:
         global CACHED_RESULT
+        feedback = await get_item(item_id)
         try:
             product_row = data.loc[data["ITEM_ID"] == item_id].iloc[0]
         except:
@@ -203,7 +228,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_1, conn, item_id)
             array_1 += injections
             final_result += array_1
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_1 
 
@@ -216,7 +254,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_2, conn, item_id)
             array_2 += injections
             final_result += array_2
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_2
 
@@ -229,7 +280,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_3, conn, item_id)
             array_3 += injections
             final_result += array_3
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_3
 
@@ -242,7 +306,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_4, conn, item_id)
             array_4 += injections
             final_result += array_4
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_4
 
@@ -255,7 +332,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_5, conn, item_id)
             array_5 += injections
             final_result += array_5
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_5
 
@@ -268,7 +358,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_6, conn, item_id)
             array_6 += injections
             final_result + array_6
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_6
 
@@ -281,7 +384,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_7, conn, item_id)
             array_7 += injections
             final_result += array_7
-            CACHED_RESULT[item_id] =await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_7
 
@@ -294,7 +410,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_8, conn, item_id)
             array_8 += injections
             final_result += array_8
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_8
 
@@ -307,7 +436,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_9, conn, item_id)
             array_9 += injections
             final_result += array_9
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_9
 
@@ -320,7 +462,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_10, conn, item_id)
             array_10 += injections
             final_result += array_10
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_10
 
@@ -333,7 +488,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_11, conn, item_id)
             array_11 += injections
             final_result += array_11
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_11
 
@@ -346,7 +514,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_12, conn, item_id)
             array_12 += injections
             final_result += array_12
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_12
 
@@ -359,7 +540,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_13, conn, item_id)
             array_13 += injections
             final_result += array_13
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_13
 
@@ -372,7 +566,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_14, conn, item_id)
             array_14 += injections
             final_result += array_14
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_14
 
@@ -385,7 +592,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_15, conn, item_id)
             array_15 += injections
             final_result += array_15
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_15
 
@@ -398,7 +618,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_16, conn, item_id)
             array_16 += injections
             final_result += array_16
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_16
 
@@ -409,7 +642,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_17, conn, item_id)
             array_17 += injections
             final_result += array_17
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_17
 
@@ -420,7 +666,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_18, conn, item_id)
             array_18 += injections
             final_result += array_18
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_18
 
@@ -431,7 +690,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_19, conn, item_id)
             array_19 += injections
             final_result += array_19
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_19
 
@@ -442,7 +714,20 @@ async def get_recommendate(item_id: int):
             injections = await inject_related_style_shapes(array_20, conn, item_id)
             array_20 += injections
             final_result += array_20
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_20
 
@@ -456,7 +741,20 @@ async def get_recommendate(item_id: int):
         array_21 += injections
         if len(array_21) >= 6:
             final_result += array_21
-            CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+            result = await aggregate_arrays(item_id, conn, final_result)
+            if feedback and "remove" in feedback:
+                removal = feedback['remove']
+                if len(removal) > 0:
+                    result = [e for e in result if e not in removal]
+            if feedback and "addon" in feedback:
+                additional = feedback['addon']
+                for item in additional:
+                    position = int(item['position'])
+                    if position > 0:
+                        position -= 1
+                    result.insert(position, int(item['id']))
+
+            CACHED_RESULT[item_id] = result
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_21
 
@@ -467,7 +765,20 @@ async def get_recommendate(item_id: int):
         array_22 = await get_similar_category_style(array_22_, conn, item_id)
         array_22 = await distinct_and_sort_by_best_seller(array_22, conn, item_id)
         final_result += array_22
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        result = await aggregate_arrays(item_id, conn, final_result)
+        if feedback and "remove" in feedback:
+            removal = feedback['remove']
+            if len(removal) > 0:
+                result = [e for e in result if e not in removal]
+        if feedback and "addon" in feedback:
+            additional = feedback['addon']
+            for item in additional:
+                position = int(item['position'])
+                if position > 0:
+                    position -= 1
+                result.insert(position, int(item['id']))
+
+        CACHED_RESULT[item_id] = result
 
         return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
     else:
