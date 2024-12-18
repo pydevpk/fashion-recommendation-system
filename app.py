@@ -155,7 +155,9 @@ async def feedback_add(item_id: int, to_remove: RemoveModel, to_addon: AddonMode
         }
 
     res = await put_item(remove_list, addon_list, item_id)
-    del CACHED_RESULT[item_id]
+    try:
+        del CACHED_RESULT[item_id]
+    except:pass
     return {
         "status": True,
         "message":res,
