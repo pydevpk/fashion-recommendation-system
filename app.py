@@ -74,6 +74,9 @@ class AddonDataModel(BaseModel):
 class AddonModel(BaseModel):
     data: List[AddonDataModel] = []
 
+class Comment(BaseModel):
+    data: str = "No comment"
+
 
 async def normalize_query(query):
     # Normalize and encode query
@@ -139,7 +142,7 @@ async def feedback_detail(item_id: int):
 
 
 @app.post("/feedback-add/{item_id}/")
-async def feedback_add(item_id: int, to_remove: RemoveModel, to_addon: AddonModel):
+async def feedback_add(item_id: int, to_remove: RemoveModel, to_addon: AddonModel, comment: Comment):
     global CACHED_RESULT
     addon_list = []
     remove_list = []
@@ -154,7 +157,7 @@ async def feedback_add(item_id: int, to_remove: RemoveModel, to_addon: AddonMode
             "data": []
         }
 
-    res = await put_item(remove_list, addon_list, item_id)
+    res = await put_item(remove_list, addon_list, item_id, comment.data)
     try:
         del CACHED_RESULT[item_id]
     except:pass

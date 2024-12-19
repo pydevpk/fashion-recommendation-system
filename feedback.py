@@ -15,18 +15,24 @@ async def get_item(item_id: str):
     return None
 
 
-async def put_item(remove, addon, item_id):
+async def put_item(remove, addon, item_id, comment):
     if item_id:
         item = await get_item(item_id)
         if item:
             table.update_item(
                 Key={'pk': str(item_id)},
                 ConditionExpression= 'attribute_exists(pk)',
-                UpdateExpression="SET #remove = :s_remove, addon = :s_addon",
+                UpdateExpression="SET #r = :remove, #a = :addon, #c = :comment",
                 ExpressionAttributeNames={
-                    '#remove': 'remove'  # Map the reserved keyword to a placeholder
-                },
-                ExpressionAttributeValues={':s_remove': remove, ':s_addon': addon},
+                        '#r': 'remove',
+                        '#a': 'addon',
+                        '#c': 'comment'
+                    },
+                ExpressionAttributeValues={
+                        ':remove': remove, 
+                        ':addon': addon, 
+                        ':comment': comment
+                    },
                 ReturnValues="UPDATED_NEW"
             )
             return f"Item {item_id} feedback updated"
@@ -34,7 +40,8 @@ async def put_item(remove, addon, item_id):
         Item={
             'pk': str(item_id),
             'remove': remove,
-            'addon': addon
+            'addon': addon,
+            'comment': comment
         }
     )
 
