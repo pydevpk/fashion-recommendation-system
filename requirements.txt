@@ -10,3 +10,4 @@ python-dotenv
 SQLAlchemy
 cryptography
 pymysql
+aiomysql

@@ -1,32 +1,29 @@
 from typing import List
-import time
 import os
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates  
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import UploadFile
-from fastapi import File
-from fastapi import Response
 from pydantic import BaseModel
 import sqlalchemy
-from dotenv import load_dotenv
-
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 import pandas as pd
 import pickle
 import numpy as np
-from numpy.linalg import norm
 from sklearn.neighbors import NearestNeighbors
-from sklearn.preprocessing import normalize
 import joblib
-from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
+
 from rules import apply_lj_product_rule, apply_silver_platinum_rule, apply_exact_matching_rule, distinct_and_sort_by_best_seller, inject_related_style_shapes, aggregate_arrays, get_similar_name_styles, apply_lj_product_rule_df, apply_silver_platinum_rule_df, get_similar_category_style
-from feedback import get_item, put_item
+from feedback import Feedback
+from feedback import FeedbackHistory
+from feedback import async_session
 
-
+from dotenv import load_dotenv
 load_dotenv('env.txt')
+
+
 DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_NAME = os.getenv('DB_NAME')
@@ -77,6 +74,20 @@ class AddonModel(BaseModel):
 class Comment(BaseModel):
     data: str = "No comment"
 
+class User(BaseModel):
+    data: int
+
+
+class FeedbackPayload(BaseModel):
+    to_remove: List[int] = []
+    to_addon: List[AddonDataModel] = []
+    comment: str = "No comment"
+    user_id: int
+
+
+async def get_session() -> AsyncSession:
+    async with async_session() as session:
+        yield session
 
 async def normalize_query(query):
     # Normalize and encode query
@@ -133,46 +144,142 @@ async def read_root():
 
 
 @app.get("/feedback-detail/{item_id}")
-async def feedback_detail(item_id: int):
+async def feedback_detail(item_id: int, session: AsyncSession = Depends(get_session)):
+    try:
+        feedback_result = await session.execute(
+            select(Feedback).where(Feedback.id==item_id)
+        )
+        feedback = feedback_result.scalars().one_or_none()
+        if feedback:
+            return {
+                "status": True,
+                "message": f'Feedback for item {item_id}',
+                "data": []
+            }
+        return {
+            "status": False,
+            "message": f'No feedback found for item {item_id}',
+            "data": []
+        }
+    except Exception as e:
+        return {
+            "status": False,
+            "message": str(e),
+            "data": []
+        }
+
+
+@app.get("/feedback-history/{item_id}")
+async def feedback_history(item_id: int, session: AsyncSession = Depends(get_session)):
+    feedback_result = await session.execute(
+            select(FeedbackHistory).where(FeedbackHistory.item_id==item_id)
+        )
+    
+    details = feedback_result.scalars().all()
+    history = [{"id": item.id, "user_id": item.user_id, "remove": item.remove, "addon": item.addon, "comment": item.comment, "timestamp": item.timestamp} for item in details]
     return {
         "status": True,
-        "message":f"Feedback for item ID: {item_id}",
-        "data": await get_item(item_id)
+        "message": f"Feedback history fetched successfully for item {item_id}",
+        "data": history
     }
 
 
 @app.post("/feedback-add/{item_id}/")
-async def feedback_add(item_id: int, to_remove: RemoveModel, to_addon: AddonModel, comment: Comment):
-    global CACHED_RESULT
-    addon_list = []
-    remove_list = []
-    if len(to_addon.data) > 0:
-        addon_list = [addon.dict() for addon in to_addon.data]
-    if len(to_remove.data) > 0:
-        remove_list = [rm for rm in to_remove.data]
-    if len(to_addon.data) <= 0 and len(to_remove.data) <= 0:
+async def feedback_add(item_id: int, payload: FeedbackPayload, session: AsyncSession = Depends(get_session)):
+    try:
+        global CACHED_RESULT
+        addon_list = []
+        remove_list = []
+        if len(payload.to_addon) > 0:
+            addon_list = [addon.dict() for addon in payload.to_addon]
+        if len(payload.to_remove) > 0:
+            remove_list = [rm for rm in payload.to_remove]
+        if len(payload.to_addon) <= 0 and len(payload.to_remove) <= 0:
+            return {
+                "status": False,
+                "message": "To data found in body to add or update",
+                "data": []
+            }
+
+        comment = payload.comment
+        user_id = payload.user_id
+        
+        existing_feedback = await session.execute(
+            select(Feedback).where(Feedback.id==item_id)
+        )
+
+        existing_feedback = existing_feedback.scalars().one_or_none()
+        if existing_feedback:
+            existing_feedback.remove = remove_list
+            existing_feedback.addon = addon_list
+            existing_feedback.user_id = user_id
+            existing_feedback.comment = comment
+            existing_feedback.utimestamp=datetime.now(tz=timezone.utc),
+            feedback_history = FeedbackHistory(
+                user_id=user_id,
+                item_id=item_id,
+                timestamp=datetime.now(tz=timezone.utc),
+                utimestamp=datetime.now(tz=timezone.utc),
+                comment=comment,
+                remove = remove_list,
+                addon = addon_list
+            )
+            session.add(existing_feedback)
+            session.add(feedback_history)
+            await session.flush()
+            await session.commit()
+            return {
+                "status": True,
+                "message": f'Feedback updated for item {item_id}',
+                "data": []
+            }
+        
+        existing_feedback = Feedback(
+            user_id=user_id,
+            id=item_id,
+            timestamp=datetime.now(tz=timezone.utc),
+            utimestamp=datetime.now(tz=timezone.utc),
+            comment=comment,
+            remove = remove_list,
+            addon = addon_list
+        )
+        session.add(existing_feedback)
+
+        feedback_history = FeedbackHistory(
+                user_id=user_id,
+                item_id=item_id,
+                timestamp=datetime.now(tz=timezone.utc),
+                utimestamp=datetime.now(tz=timezone.utc),
+                comment=comment,
+                remove = remove_list,
+                addon = addon_list
+            )
+        session.add(existing_feedback)
+        session.add(feedback_history)
+        await session.flush()
+
+        await session.commit()
+        try:
+            del CACHED_RESULT[item_id]
+        except:pass
+
+        return {
+            "status": True,
+            "message": f'Feedback created for {item_id}',
+            "data": []
+        }
+    except Exception as e:
         return {
             "status": False,
-            "message": "To data found in body to add or update",
+            "message": str(e),
             "data": []
         }
 
-    res = await put_item(remove_list, addon_list, item_id, comment.data)
-    try:
-        del CACHED_RESULT[item_id]
-    except:pass
-    return {
-        "status": True,
-        "message":res,
-        "data": []
-    }
-
 
 @app.get("/similar-styles-recommendations/{item_id}")
-async def get_recommendate(item_id: int):
+async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_session)):
     if item_id in data["ITEM_ID"].values:
         global CACHED_RESULT
-        feedback = await get_item(item_id)
         try:
             product_row = data.loc[data["ITEM_ID"] == item_id].iloc[0]
         except:
@@ -180,6 +287,11 @@ async def get_recommendate(item_id: int):
         
         if item_id in CACHED_RESULT:
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
+
+        feedback_result = await session.execute(
+            select(Feedback).where(Feedback.id==item_id)
+        )
+        feedback = feedback_result.scalars().one_or_none()
 
         p_r = product_row
 
