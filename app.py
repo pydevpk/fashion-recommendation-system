@@ -154,7 +154,7 @@ async def feedback_detail(item_id: int, session: AsyncSession = Depends(get_sess
             return {
                 "status": True,
                 "message": f'Feedback for item {item_id}',
-                "data": []
+                "data": {"id": feedback.id, "user_id": feedback.user_id, "remove": feedback.remove, "addon": feedback.addon, "comment": feedback.comment, "timestamp": feedback.timestamp}
             }
         return {
             "status": False,
