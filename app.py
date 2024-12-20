@@ -912,10 +912,13 @@ def reapply(array_0, item_id):
     array_1 = apply_exact_matching_rule(array_0, data, item_id)
     array_1 = distinct_and_sort_by_best_seller(array_1, data, item_id)
 
+
+C_RESULT = {}
+
 @app.get("/items/{id}", response_class=HTMLResponse)
 async def read_item(request: Request, id: int):
     print(id, 'iiiiiiiiiiiiiiiii')
-    global CACHED_RESULT
+    global C_RESULT
     try:
         product_row = data.loc[data["ITEM_ID"] == id].iloc[0]
     except:
@@ -937,9 +940,9 @@ async def read_item(request: Request, id: int):
             "ITEM_NAME": product_row['ITEM_NAME']
         }
     
-    if id in CACHED_RESULT:
+    if id in C_RESULT:
         attribute_based = []
-        for i in CACHED_RESULT[id]:
+        for i in C_RESULT[id]['result']:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -957,7 +960,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     
     p_r = product_row
@@ -1019,7 +1022,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 1
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1039,7 +1045,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_1
     
@@ -1055,7 +1061,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 2
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1075,7 +1084,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_2
 
@@ -1091,7 +1100,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 3
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1111,7 +1123,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_3
 
@@ -1127,7 +1139,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 4
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1147,7 +1162,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_4
 
@@ -1163,7 +1178,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 5
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1183,7 +1201,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_5
 
@@ -1199,7 +1217,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 6
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1219,7 +1240,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_6
 
@@ -1235,7 +1256,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 7
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1255,7 +1279,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_7
 
@@ -1271,7 +1295,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 8
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1291,7 +1318,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_8
 
@@ -1307,7 +1334,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 9
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1327,7 +1357,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_9
 
@@ -1343,7 +1373,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 10
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1363,7 +1396,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_10
 
@@ -1379,7 +1412,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 11
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1399,7 +1435,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_11
 
@@ -1415,7 +1451,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 12
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1435,7 +1474,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_12
 
@@ -1451,7 +1490,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 13
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1471,7 +1513,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_13
 
@@ -1487,7 +1529,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 14
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1507,7 +1552,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_14
 
@@ -1523,7 +1568,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 15
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1543,7 +1591,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_15
 
@@ -1559,7 +1607,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 16
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1579,7 +1630,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_16
 
@@ -1593,7 +1644,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 17
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1613,7 +1667,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_17
 
@@ -1627,7 +1681,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 18
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1647,7 +1704,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_18
 
@@ -1661,7 +1718,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 19
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1681,7 +1741,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_19
 
@@ -1695,7 +1755,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 20
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1715,7 +1778,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_20
 
@@ -1732,7 +1795,10 @@ async def read_item(request: Request, id: int):
         try:
             final_result.remove(item_id)
         except:pass
-        CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+        C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 21
+        }
         attribute_based = []
         for i in await aggregate_arrays(item_id, conn, final_result):
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
@@ -1752,7 +1818,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
         )
     final_result += array_21
 
@@ -1766,7 +1832,10 @@ async def read_item(request: Request, id: int):
     try:
         final_result.remove(item_id)
     except:pass
-    CACHED_RESULT[item_id] = await aggregate_arrays(item_id, conn, final_result)
+    C_RESULT[item_id] = {
+            'result': await aggregate_arrays(item_id, conn, final_result),
+            'step': 22
+        }
 
     final_array = await aggregate_arrays(item_id, conn, final_result)
 
@@ -1789,7 +1858,7 @@ async def read_item(request: Request, id: int):
         attribute_based.append(query)
 
     return templates.TemplateResponse(
-        request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query}
+        request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
     )
 
 
