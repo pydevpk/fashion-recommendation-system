@@ -292,6 +292,8 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
             select(Feedback).where(Feedback.id==item_id)
         )
         feedback = feedback_result.scalars().one_or_none()
+        if feedback:
+            feedback = {"remove": feedback.remove, "addon": feedback.addon}
 
         p_r = product_row
 
