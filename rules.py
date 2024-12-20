@@ -477,3 +477,13 @@ async def aggregate_arrays(item_id, data, *arrays):
     except:pass
     return await remove_base_uid(aggregated, item_id, data)
 
+
+async def aggregate_arrays_single(array):
+    aggregated = []
+    seen = set()
+    for item in array:
+        if item not in seen:
+            aggregated.append(item)
+            seen.add(item)
+    return aggregated
+

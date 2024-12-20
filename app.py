@@ -15,7 +15,7 @@ from sklearn.neighbors import NearestNeighbors
 import joblib
 from datetime import datetime, timezone
 
-from rules import apply_lj_product_rule, apply_silver_platinum_rule, apply_exact_matching_rule, distinct_and_sort_by_best_seller, inject_related_style_shapes, aggregate_arrays, get_similar_name_styles, apply_lj_product_rule_df, apply_silver_platinum_rule_df, get_similar_category_style
+from rules import apply_lj_product_rule, apply_silver_platinum_rule, apply_exact_matching_rule, distinct_and_sort_by_best_seller, inject_related_style_shapes, aggregate_arrays, get_similar_name_styles, apply_lj_product_rule_df, apply_silver_platinum_rule_df, get_similar_category_style, aggregate_arrays_single
 from feedback import Feedback
 from feedback import FeedbackHistory
 from feedback import async_session
@@ -365,7 +365,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_1 
 
@@ -391,7 +391,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_2
 
@@ -417,7 +417,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_3
 
@@ -443,7 +443,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_4
 
@@ -469,7 +469,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_5
 
@@ -495,7 +495,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_6
 
@@ -521,7 +521,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_7
 
@@ -547,7 +547,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_8
 
@@ -573,7 +573,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_9
 
@@ -599,7 +599,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_10
 
@@ -625,7 +625,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_11
 
@@ -651,7 +651,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_12
 
@@ -677,7 +677,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_13
 
@@ -703,7 +703,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_14
 
@@ -729,7 +729,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_15
 
@@ -755,7 +755,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_16
 
@@ -779,7 +779,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_17
 
@@ -803,7 +803,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_18
 
@@ -827,7 +827,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_19
 
@@ -851,7 +851,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_20
 
@@ -878,7 +878,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                         position -= 1
                     result.insert(position, int(item['id']))
 
-            CACHED_RESULT[item_id] = result
+            CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
             return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
         final_result += array_21
 
@@ -902,8 +902,7 @@ async def get_recommendate(item_id: int, session: AsyncSession = Depends(get_ses
                     position -= 1
                 result.insert(position, int(item['id']))
 
-        CACHED_RESULT[item_id] = result
-
+        CACHED_RESULT[item_id] = await aggregate_arrays_single(result)
         return {"status": True, "message":"Predicted successfully.", 'array': CACHED_RESULT[item_id]}
     else:
         return {"status": False, "message":"Item ID not found, please check again!"}
