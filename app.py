@@ -194,12 +194,12 @@ async def feedback_add(item_id: int, payload: FeedbackPayload, session: AsyncSes
             addon_list = [addon.dict() for addon in payload.to_addon]
         if len(payload.to_remove) > 0:
             remove_list = [rm for rm in payload.to_remove]
-        if len(payload.to_addon) <= 0 and len(payload.to_remove) <= 0:
-            return {
-                "status": False,
-                "message": "To data found in body to add or update",
-                "data": []
-            }
+        # if len(payload.to_addon) <= 0 and len(payload.to_remove) <= 0:
+        #     return {
+        #         "status": False,
+        #         "message": "To data found in body to add or update",
+        #         "data": []
+        #     }
 
         comment = payload.comment
         user_id = payload.user_id
@@ -228,6 +228,11 @@ async def feedback_add(item_id: int, payload: FeedbackPayload, session: AsyncSes
             session.add(feedback_history)
             await session.flush()
             await session.commit()
+
+            try:
+                del CACHED_RESULT[item_id]
+            except:pass
+            
             return {
                 "status": True,
                 "message": f'Feedback updated for item {item_id}',
