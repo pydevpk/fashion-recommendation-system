@@ -13,6 +13,15 @@
     </div>
     {% else %}
     <div class="">
+      <div class="row text-center">
+        <div class="col-12">
+          <ul class="list-group text-center">
+            {% for array in arrays %}
+            <li class="list-group-item">Step: {{array.step}} | Result: {{array.results}}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
         <div class="row text-center">
             <h1>Your search (Step: {{step}})</h1>
             <div class="col-6">

@@ -959,7 +959,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     
     p_r = product_row
@@ -1008,6 +1008,7 @@ async def read_item(request: Request, id: int):
     array_0 = array_0_1+array_0_2
 
     final_result = []
+    arrays = []
     
     #print('ARRAY-1 ------------------------------------------------')
     array_1 = await apply_exact_matching_rule(array_0, conn, item_id)
@@ -1018,15 +1019,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_1, conn, item_id)
         array_1 += injections
         final_result += array_1
+        arrays.append({
+            "results": array_1,
+            "step": 1
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 1
+            'result': last_result,
+            'step': 1,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1044,9 +1051,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_1
+    arrays.append({
+            "results": array_1,
+            "step": 1
+        })
     
     #print('ARRAY-2 ------------------------------------------------')
     array_2 = await apply_exact_matching_rule(array_0, conn, item_id, 0.2, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
@@ -1057,15 +1068,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_2, conn, item_id)
         array_2 += injections
         final_result += array_2
+        arrays.append({
+            "results": array_2,
+            "step": 2
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 2
+            'result': last_result,
+            'step': 2,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1083,9 +1100,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_2
+    arrays.append({
+            "results": array_2,
+            "step": 2
+        })
 
     #print('ARRAY-3 ------------------------------------------------')
     array_3 = await apply_exact_matching_rule(array_0, conn, item_id, 0.2, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
@@ -1096,15 +1117,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_3, conn, item_id)
         array_3 += injections
         final_result += array_3
+        arrays.append({
+            "results": array_3,
+            "step": 3
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 3
+            'result': last_result,
+            'step': 3,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1122,9 +1149,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_3
+    arrays.append({
+            "results": array_3,
+            "step": 3
+        })
 
     #print('ARRAY-4 ------------------------------------------------')
     array_4 = await apply_exact_matching_rule(array_0, conn, item_id, 0.2, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
@@ -1135,15 +1166,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_4, conn, item_id)
         array_4 += injections
         final_result += array_4
+        arrays.append({
+            "results": array_4,
+            "step": 4
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 4
+            'result': last_result,
+            'step': 4,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1161,9 +1198,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_4
+    arrays.append({
+            "results": array_4,
+            "step": 4
+        })
 
     #print('ARRAY-5 ------------------------------------------------')
     array_5 = await apply_exact_matching_rule(array_0, conn, item_id, 0.4)
@@ -1174,15 +1215,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_5, conn, item_id)
         array_5 += injections
         final_result += array_5
+        arrays.append({
+            "results": array_5,
+            "step": 5
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 5
+            'result': last_result,
+            'step': 5,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1200,9 +1247,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_5
+    arrays.append({
+            "results": array_5,
+            "step": 5
+        })
 
     #print('ARRAY-6 ------------------------------------------------')
     array_6 = await apply_exact_matching_rule(array_0, conn, item_id, 0.4, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
@@ -1213,15 +1264,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_6, conn, item_id)
         array_6 += injections
         final_result + array_6
+        arrays.append({
+            "results": array_6,
+            "step": 6
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 6
+            'result': last_result,
+            'step': 6,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1239,9 +1296,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_6
+    arrays.append({
+            "results": array_6,
+            "step": 6
+        })
 
     #print('ARRAY-7 ------------------------------------------------')
     array_7 = await apply_exact_matching_rule(array_0, conn, item_id, 0.4, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
@@ -1252,15 +1313,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_7, conn, item_id)
         array_7 += injections
         final_result += array_7
+        arrays.append({
+            "results": array_7,
+            "step": 7
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 7
+            'result': last_result,
+            'step': 7,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1278,9 +1345,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_7
+    arrays.append({
+            "results": array_7,
+            "step": 7
+        })
 
     #print('ARRAY-8 ------------------------------------------------')
     array_8 = await apply_exact_matching_rule(array_0, conn, item_id, 0.4, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
@@ -1291,15 +1362,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_8, conn, item_id)
         array_8 += injections
         final_result += array_8
+        arrays.append({
+            "results": array_8,
+            "step": 8
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 8
+            'result': last_result,
+            'step': 8,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1317,9 +1394,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_8
+    arrays.append({
+            "results": array_8,
+            "step": 8
+        })
 
     #print('ARRAY-9 ------------------------------------------------')
     array_9 = await apply_exact_matching_rule(array_0, conn, item_id, 0.6)
@@ -1330,15 +1411,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_9, conn, item_id)
         array_9 += injections
         final_result += array_9
+        arrays.append({
+            "results": array_9,
+            "step": 9
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 9
+            'result': last_result,
+            'step': 9,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1356,9 +1443,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_9
+    arrays.append({
+            "results": array_9,
+            "step": 9
+        })
 
     #print('ARRAY-10 ------------------------------------------------')
     array_10 = await apply_exact_matching_rule(array_0, conn, item_id, 0.6, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
@@ -1369,15 +1460,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_10, conn, item_id)
         array_10 += injections
         final_result += array_10
+        arrays.append({
+            "results": array_10,
+            "step": 10
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 10
+            'result': last_result,
+            'step': 10,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1395,9 +1492,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_10
+    arrays.append({
+            "results": array_10,
+            "step": 10
+        })
 
     #print('ARRAY-11 ------------------------------------------------')
     array_11 = await apply_exact_matching_rule(array_0, conn, item_id, 0.6, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
@@ -1408,15 +1509,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_11, conn, item_id)
         array_11 += injections
         final_result += array_11
+        arrays.append({
+            "results": array_11,
+            "step": 11
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 11
+            'result': last_result,
+            'step': 11,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1434,9 +1541,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_11
+    arrays.append({
+            "results": array_11,
+            "step": 11
+        })
 
     #print('ARRAY-12 ------------------------------------------------')
     array_12 = await apply_exact_matching_rule(array_0, conn, item_id, 0.6, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
@@ -1447,15 +1558,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_12, conn, item_id)
         array_12 += injections
         final_result += array_12
+        arrays.append({
+            "results": array_12,
+            "step": 12
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 12
+            'result': last_result,
+            'step': 12,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1473,9 +1590,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_12
+    arrays.append({
+            "results": array_12,
+            "step": 12
+        })
 
     #print('ARRAY-13 ------------------------------------------------')
     array_13 = await apply_exact_matching_rule(array_0, conn, item_id, 1)
@@ -1486,15 +1607,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_13, conn, item_id)
         array_13 += injections
         final_result += array_13
+        arrays.append({
+            "results": array_13,
+            "step": 13
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 13
+            'result': last_result,
+            'step': 13,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1512,9 +1639,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_13
+    arrays.append({
+            "results": array_13,
+            "step": 13
+        })
 
     #print('ARRAY-14 ------------------------------------------------')
     array_14 = await apply_exact_matching_rule(array_0, conn, item_id, 1, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
@@ -1525,15 +1656,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_14, conn, item_id)
         array_14 += injections
         final_result += array_14
+        arrays.append({
+            "results": array_14,
+            "step": 14
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 14
+            'result': last_result,
+            'step': 14,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1551,9 +1688,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_14
+    arrays.append({
+            "results": array_14,
+            "step": 14
+        })
 
     #print('ARRAY-15 ------------------------------------------------')
     array_15 = await apply_exact_matching_rule(array_0, conn, item_id, 1, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
@@ -1564,15 +1705,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_15, conn, item_id)
         array_15 += injections
         final_result += array_15
+        arrays.append({
+            "results": array_15,
+            "step": 15
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 15
+            'result': last_result,
+            'step': 15,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1590,9 +1737,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_15
+    arrays.append({
+            "results": array_15,
+            "step": 15
+        })
 
     #print('ARRAY-16 ------------------------------------------------')
     array_16 = await apply_exact_matching_rule(array_0, conn, item_id, 1, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
@@ -1603,15 +1754,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_16, conn, item_id)
         array_16 += injections
         final_result += array_16
+        arrays.append({
+            "results": array_16,
+            "step": 16
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 16
+            'result': last_result,
+            'step': 16,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1629,9 +1786,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_16
+    arrays.append({
+            "results": array_16,
+            "step": 16
+        })
 
     #print('ARRAY-17 ------------------------------------------------')
     array_17 = await apply_exact_matching_rule(array_0, conn, item_id, 0)
@@ -1640,15 +1801,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_17, conn, item_id)
         array_17 += injections
         final_result += array_17
+        arrays.append({
+            "results": array_17,
+            "step": 17
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 17
+            'result': last_result,
+            'step': 17,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1666,9 +1833,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_17
+    arrays.append({
+            "results": array_17,
+            "step": 17
+        })
 
     #print('ARRAY-18 ------------------------------------------------')
     array_18 = await apply_exact_matching_rule(array_0, conn, item_id, 0, ["METAL_KARAT_DISPLAY", "COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
@@ -1677,15 +1848,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_18, conn, item_id)
         array_18 += injections
         final_result += array_18
+        arrays.append({
+            "results": array_18,
+            "step": 18
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 18
+            'result': last_result,
+            'step': 18,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1703,9 +1880,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_18
+    arrays.append({
+            "results": array_18,
+            "step": 18
+        })
 
     #print('ARRAY-19 ------------------------------------------------')
     array_19 = await apply_exact_matching_rule(array_0, conn, item_id, 0, ["COLOR_STONE", "CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
@@ -1714,15 +1895,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_19, conn, item_id)
         array_19 += injections
         final_result += array_19
+        arrays.append({
+            "results": array_19,
+            "step": 19
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 19
+            'result': last_result,
+            'step': 19,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1740,9 +1927,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_19
+    arrays.append({
+            "results": array_19,
+            "step": 19
+        })
 
     #print('ARRAY-20 ------------------------------------------------')
     array_20 = await apply_exact_matching_rule(array_0, conn, item_id, 0, ["CATEGORY_TYPE", "ITEM_TYPE", "PRODUCT_STYLE"])
@@ -1751,15 +1942,21 @@ async def read_item(request: Request, id: int):
         injections = await inject_related_style_shapes(array_20, conn, item_id)
         array_20 += injections
         final_result += array_20
+        arrays.append({
+            "results": array_20,
+            "step": 20
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 20
+            'result': last_result,
+            'step': 20,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1777,9 +1974,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_20
+    arrays.append({
+            "results": array_20,
+            "step": 20
+        })
 
     #print('ARRAY-21 ------------------------------------------------')
     injections = await inject_related_style_shapes(final_result, conn, item_id)
@@ -1791,15 +1992,21 @@ async def read_item(request: Request, id: int):
     array_21 += injections
     if len(array_21) >= 6:
         final_result += array_21
+        arrays.append({
+            "results": array_21,
+            "step": 21
+        })
         try:
             final_result.remove(item_id)
         except:pass
+        last_result = await aggregate_arrays(item_id, conn, final_result)
         C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 21
+            'result': last_result,
+            'step': 21,
+            'arrays': arrays
         }
         attribute_based = []
-        for i in await aggregate_arrays(item_id, conn, final_result):
+        for i in last_result:
             product_row = data.loc[data["ITEM_ID"] == i].iloc[0]
             query = {
                 "ITEM_ID": product_row["ITEM_ID"],
@@ -1817,9 +2024,13 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_21
+    arrays.append({
+            "results": array_21,
+            "step": 21
+        })
 
     #print('ARRAY-22 ------------------------------------------------')
     array_22_1 = await apply_lj_product_rule_df(conn, item_id)
@@ -1828,15 +2039,21 @@ async def read_item(request: Request, id: int):
     array_22 = await get_similar_category_style(array_22_, conn, item_id)
     array_22 = await distinct_and_sort_by_best_seller(array_22, conn, item_id)
     final_result += array_22
+    arrays.append({
+            "results": array_22,
+            "step": 22
+        })
     try:
         final_result.remove(item_id)
     except:pass
+    last_result = await aggregate_arrays(item_id, conn, final_result)
     C_RESULT[item_id] = {
-            'result': await aggregate_arrays(item_id, conn, final_result),
-            'step': 22
+            'result': last_result,
+            'step': 22,
+            'arrays': arrays
         }
 
-    final_array = await aggregate_arrays(item_id, conn, final_result)
+    final_array = last_result
 
     attribute_based = []
     for i in final_array:
@@ -1857,7 +2074,7 @@ async def read_item(request: Request, id: int):
         attribute_based.append(query)
 
     return templates.TemplateResponse(
-        request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step']}
+        request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
     )
 
 
