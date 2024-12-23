@@ -914,7 +914,7 @@ def reapply(array_0, item_id):
 
 C_RESULT = {}
 
-@app.get("/items/{id}", response_class=HTMLResponse)
+@app.get("/step_wise_results/{id}", response_class=HTMLResponse)
 async def read_item(request: Request, id: int):
     print(id, 'iiiiiiiiiiiiiiiii')
     global C_RESULT
