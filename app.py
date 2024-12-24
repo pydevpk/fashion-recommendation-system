@@ -922,7 +922,7 @@ async def read_item(request: Request, id: int):
         product_row = data.loc[data["ITEM_ID"] == id].iloc[0]
     except:
         return templates.TemplateResponse(
-        request=request, name="item.html", context={"Error": True}
+        request=request, name="step_wise_results.html", context={"Error": True}
     )
 
     search_query = {
@@ -959,7 +959,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     
     p_r = product_row
@@ -1051,7 +1051,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_1
     arrays.append({
@@ -1100,7 +1100,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_2
     arrays.append({
@@ -1149,7 +1149,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_3
     arrays.append({
@@ -1198,7 +1198,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_4
     arrays.append({
@@ -1247,7 +1247,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_5
     arrays.append({
@@ -1296,7 +1296,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_6
     arrays.append({
@@ -1345,7 +1345,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_7
     arrays.append({
@@ -1394,7 +1394,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_8
     arrays.append({
@@ -1443,7 +1443,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_9
     arrays.append({
@@ -1492,7 +1492,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_10
     arrays.append({
@@ -1541,7 +1541,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_11
     arrays.append({
@@ -1590,7 +1590,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_12
     arrays.append({
@@ -1639,7 +1639,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_13
     arrays.append({
@@ -1688,7 +1688,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_14
     arrays.append({
@@ -1737,7 +1737,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_15
     arrays.append({
@@ -1786,7 +1786,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_16
     arrays.append({
@@ -1833,7 +1833,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_17
     arrays.append({
@@ -1880,7 +1880,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_18
     arrays.append({
@@ -1927,7 +1927,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_19
     arrays.append({
@@ -1974,7 +1974,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_20
     arrays.append({
@@ -2024,7 +2024,7 @@ async def read_item(request: Request, id: int):
             attribute_based.append(query)
 
         return templates.TemplateResponse(
-            request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+            request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
         )
     final_result += array_21
     arrays.append({
@@ -2074,7 +2074,7 @@ async def read_item(request: Request, id: int):
         attribute_based.append(query)
 
     return templates.TemplateResponse(
-        request=request, name="item.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
+        request=request, name="step_wise_results.html", context={"attribute_based":attribute_based, "search_query":search_query, 'step':C_RESULT[id]['step'], 'arrays': C_RESULT[id]['arrays']}
     )
 
 

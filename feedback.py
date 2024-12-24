@@ -60,7 +60,8 @@ class FeedbackHistory(Base):
 	addon = Column(JSON, default=list)
 	comment = Column(Text, default="No Comments")
 	timestamp = Column(DateTime, nullable=False)	 
-	utimestamp = Column(DateTime, default=func.now(), nullable=False)	 
+	utimestamp = Column(DateTime, default=func.now(), nullable=False)	
+	 
 
 if __name__ == "__main__":
 	engine = create_engine(get_db_url(False), echo=True)
